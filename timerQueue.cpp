@@ -54,7 +54,7 @@ void TimerQueue::timerHandle()
 
     std::multimap<uint64_t,std::shared_ptr<Timer> >::iterator it;
 
-    for(it = onceTimers.begin(); it != onceTimers.end(); it++)
+    for(it = onceTimers.begin(); it != onceTimers.end(); )
     {
         if(it->first > Timer::getNowTimeMSecond())
         {
@@ -62,10 +62,10 @@ void TimerQueue::timerHandle()
         }
 
         it->second->timerHandle();
-        onceTimers.erase(it);
+        it = onceTimers.erase(it);
     }
 
-    for(it = recurringTimers.begin(); it != recurringTimers.end(); it++)
+    for(it = recurringTimers.begin(); it != recurringTimers.end();)
     {
         if (it->first > Timer::getNowTimeMSecond())
         {
@@ -79,7 +79,7 @@ void TimerQueue::timerHandle()
 
         recurringTimers.insert(std::pair<uint64_t, std::shared_ptr<Timer> >(timer->getTimeOutMSecond(),timer));
 
-        recurringTimers.erase(it);
+        it = recurringTimers.erase(it);
 
     }
     resetTimer();
