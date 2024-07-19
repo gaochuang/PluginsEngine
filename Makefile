@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -O2 -fPIC -std=c++17
+CXXFLAGS = -Wall -Wextra -O2 -fPIC -std=c++11
 
 LIBNAME = ractor
 
