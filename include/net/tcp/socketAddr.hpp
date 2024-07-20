@@ -9,8 +9,8 @@ namespace reactorFramework
 
 class SocketAddr
 {
+public:
     SocketAddr();
-
     explicit SocketAddr(bool isAny, int port = 0);
     SocketAddr(struct sockaddr_in addr);
     SocketAddr(const std::string& addrPort);

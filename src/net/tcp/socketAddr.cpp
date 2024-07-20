@@ -49,7 +49,6 @@ SocketAddr::SocketAddr(uint16_t port):valid(false)
     {
         return ;
     }
-
     *this = SocketAddr(addrIn);
 }
 

@@ -84,7 +84,6 @@ int SocketOperation::connect(int sockfd, const struct sockaddr* addr)
     return ret;
 }
 
-
 int SocketOperation::accept(int sockfd, struct sockaddr_in* addr)
 {
 	socklen_t len = sizeof(struct sockaddr_in);
@@ -148,17 +147,17 @@ bool SocketOperation::toAddrIpv4(const std::string& addr, uint16_t port, struct 
     size_t first = 0;
     while(true)
     {
-        auto last = addr.find('.',first);
+        auto last = addr.find('.', first);
         if(last == addr.npos)
         {
             ip.push_back(addr.substr(first,addr.size() - first));
             break;
         }
         ip.push_back(addr.substr(first, last- first));
-        first = last+1;
+        first = last + 1;
     }
 
-    if( ip.size() != 4 )
+    if(ip.size() != 4 )
     {
         return false;
     }
@@ -192,7 +191,7 @@ bool SocketOperation::toAddrIpv4(const std::string& addr, uint16_t port, struct 
 
 bool SocketOperation::toAddrIpv4(uint16_t port, struct sockaddr_in& addrIn)
 {
-    bzero(&addrIn, sizeof(addrIn));
+    ::bzero(&addrIn, sizeof(addrIn));
     addrIn.sin_family = AF_INET;
     addrIn.sin_port = htons(port);
     addrIn.sin_addr.s_addr = htonl(INADDR_ANY);
