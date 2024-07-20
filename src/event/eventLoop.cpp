@@ -35,7 +35,10 @@ void EventLoop::runAllFunctionInLoop()
         callback();
     }
 
-    callbacks.clear();
+    if(!callbacks.empty())
+    {
+        callbacks.clear();
+    }
 }
 
 bool EventLoop::inThisThread() const
@@ -96,14 +99,17 @@ void EventLoop::runInLoop(const Callback callback)
     
 }
 
+//只执行一次的定时任务
 void EventLoop::runOnceAfter(const Callback callback, uint32_t interval)
 {
     timerQueue->runOnceAfter(callback, interval);
 }
 
+//循环执行定时任务
 void EventLoop::runEveryInterval(const Callback callback, uint32_t interval)
 {
     timerQueue->runEveryInterval(callback, interval);
 }
+
 
 }

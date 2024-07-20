@@ -33,7 +33,6 @@ uint64_t Timer::getTimeOutMSecond()
     struct timeval timeout = getTimeout();
     auto mSecond = timeout.tv_sec * 1000 + timeout.tv_usec / 1000;
 
-
     return mSecond;
 }
 

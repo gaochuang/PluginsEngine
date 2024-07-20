@@ -103,9 +103,9 @@ void Event::removeFromLoop()
     m_loop->removeEvent(m_eventFd);
 }
 
-void Event::handle(uint32_t rm_events)
+void Event::handle(uint32_t events)
 {
-    if ((rm_events & EPOLLHUP) && !(rm_events & EPOLLIN))
+    if ((events & EPOLLHUP) && !(events & EPOLLIN))
     {
         if (readCallback)
         {
@@ -113,7 +113,7 @@ void Event::handle(uint32_t rm_events)
         }
     }
 
-    if (rm_events & EPOLLERR)
+    if (events & EPOLLERR)
     {
         if (errorCallback)
         {
@@ -122,7 +122,7 @@ void Event::handle(uint32_t rm_events)
     }
 
    // EPOLLRDHUP Stream socket peer closed connection, or shut down writing half of connection
-    if (rm_events & (EPOLLIN | EPOLLPRI | EPOLLRDHUP))
+    if (events & (EPOLLIN | EPOLLPRI | EPOLLRDHUP))
     {
         if (readCallback)
         {
@@ -130,7 +130,7 @@ void Event::handle(uint32_t rm_events)
         }
     }
 
-    if (rm_events & EPOLLOUT)
+    if (events & EPOLLOUT)
     {
         if (writeCallback)
         {

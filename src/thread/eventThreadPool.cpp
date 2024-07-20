@@ -13,7 +13,7 @@ EventThreadPool::EventThreadPool(EventLoop* loop):mainLoop(loop),started(false),
 void EventThreadPool::init()
 {
     int i(0);
-    while( i < threadNum )
+    while( i-- < threadNum )
     {
         std::shared_ptr<EventLoopThread> thread(new EventLoopThread());
         thread->start();

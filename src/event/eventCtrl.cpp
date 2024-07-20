@@ -18,7 +18,6 @@ EventCtrl::~EventCtrl()
 
 void EventCtrl::addEvent(std::shared_ptr<Event> event)
 {
-    std::cout<<" event fd "<<event->getFd()<<std::endl;
     eventPool[event->getFd()] = event;
     epoll.addEvent(event.get());
 }
@@ -40,7 +39,7 @@ void EventCtrl::modifyEvent(std::shared_ptr<Event> event)
 
 void EventCtrl::modifyEvent(int fd)
 {
-      auto it = eventPool.find(fd);
+    auto it = eventPool.find(fd);
     if (it != eventPool.end())
     {
         std::shared_ptr<Event> eventS = it->second.lock();

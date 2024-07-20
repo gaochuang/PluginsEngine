@@ -1,3 +1,6 @@
+/*
+EventCtrl 责管理事件池和事件处理机制来添加、删除、修改事件，并在事件发生时调用相应的处理函数
+*/
 #ifndef EVENT_CTRL_HPP
 #define EVENT_CTRL_HPP
 

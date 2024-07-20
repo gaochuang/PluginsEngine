@@ -9,10 +9,18 @@ using namespace std;
 using namespace reactorFramework;
 
 void logWithTimestamp(const std::string& message) {
-    std::time_t now = std::time(nullptr);
-    std::tm* localTime = std::localtime(&now);
-
-    std::cout << std::put_time(localTime, "%Y-%m-%d %H:%M:%S") << " - " << message << std::endl;
+    // 获取当前时间
+    auto now = std::time(nullptr);
+    // 将时间转换为本地时间
+    auto localTime = std::localtime(&now);
+    
+    // 手动格式化时间
+    char buffer[100];
+    if (std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", localTime)) {
+        std::cout << buffer << " - " << message << std::endl;
+    } else {
+        std::cerr << "Failed to format time" << std::endl;
+    }
 }
 
 class TimerTest
@@ -34,6 +42,11 @@ public:
     {
         logWithTimestamp("callback 4 test");
     }
+
+    static void runInLoop()
+    {
+        logWithTimestamp("run in loop");
+    }
 };
 
 int main()
@@ -49,6 +62,8 @@ int main()
     loop.runEveryInterval(std::bind(&TimerTest::callback2), 2000);
 
     loop.runEveryInterval(std::bind(&TimerTest::callback3), 3000);
+
+    loop.runInLoop(std::bind(&TimerTest::runInLoop));
 
    
 

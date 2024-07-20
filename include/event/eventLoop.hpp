@@ -1,3 +1,7 @@
+/*
+EventLoop类用来管理事件循环和回调函数的执行
+*/
+
 #ifndef EVENT_LOOP_HPP
 #define EVENT_LOOP_HPP
 
