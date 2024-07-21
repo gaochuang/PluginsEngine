@@ -1,0 +1,208 @@
+#include "tcpConnect.hpp"
+#include "socketOperation.hpp"
+
+#include <memory>
+#include <unistd.h>
+#include <cerrno>
+#include <cstring>
+#include <iostream>
+
+namespace reactorFramework
+{
+
+TcpConnect::TcpConnect(EventLoop* loop, const struct sockaddr_in& addr, int fd):loop(loop),
+            socketAddr(addr),name(socketAddr.toString()),
+            socket(std::make_shared<Socket>(fd)),
+            event(std::make_shared<Event>(loop, fd)),
+            state(Disconnected)
+{
+    setNoDelay(true);
+    loop->addEvent(event);
+    event->setReadCallback(std::bind(&TcpConnect::readEvent, this));
+}
+
+TcpConnect::~TcpConnect()
+{
+    event->disableAll();
+    event->removeFromLoop();
+}
+
+void TcpConnect::setNoDelay(bool enable)
+{
+    socket->setTcpNoDelay(enable);
+}
+
+void TcpConnect::setMessageCallback(const MessageCallback callback)
+{
+    messageCallback = callback;
+}
+
+void TcpConnect::setCloseCallback(const CloseCallback callback)
+{
+    closeCallback = callback;
+}
+
+void TcpConnect::setWriteCompleteCallback(const WriteCompleteCallback callback)
+{
+    writeCompleteCallback = callback;
+}
+
+void TcpConnect::readEvent()
+{
+    int error(0);
+    auto n = readBuf.readFromIO(event->getFd(), error);
+    if (n > 0)
+    {
+        if(messageCallback)
+        {
+            messageCallback(shared_from_this(),readBuf);
+        }
+    }else if(n == 0)
+    {
+        closeEvent();
+    }else
+    {
+        std::cerr << "TcpConnection::handleRead error :" << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
+        closeEvent();
+    }
+}
+
+void TcpConnect::writeEvent()
+{
+    if (event->isWriting())
+    {
+        auto n = SocketOperation::write(event->getFd(), writeBuf.readIndexPtr(), writeBuf.readableBytes());
+        if(n > 0)
+        {
+            writeBuf.clearReadIndex(n);
+            if(writeBuf.isEmpty())
+            {
+                event->enableWriting(false);
+                if(writeCompleteCallback)
+                {
+                    writeCompleteCallback(shared_from_this()); 
+                }
+            }
+        }else
+        {
+            std::cerr << "write data error" << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
+        }
+    }else
+    {
+        std::cerr << "connect failed, socket fd " << std::to_string(event->getFd()) << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
+    }
+}
+
+void TcpConnect::closeEvent()
+{
+    state = Disconnected;
+    if(closeCallback)
+    {
+        closeCallback(shared_from_this());
+    }
+}
+
+TcpConnect& TcpConnect::getReference()
+{
+    return (*this);
+}
+
+const SocketAddr& TcpConnect::getAddr() const
+{
+    return socketAddr;
+}
+
+std::string TcpConnect::getName() const
+{
+    return name;
+}
+
+void TcpConnect::connectedHandle()
+{
+    state = Connected;
+    event->enableReading(true);
+    event->enableErrorEvent(true);
+}
+
+void TcpConnect::errorEvent()
+{
+    closeEvent();
+}
+
+void TcpConnect::write(const char* data)
+{
+    write((void*)data, ::strlen(data));
+}
+
+void TcpConnect::write(const std::string& data)
+{
+    write(data.data(), data.length());
+}
+
+void TcpConnect::write(const void* data, uint32_t length)
+{
+    int n(0);
+    size_t remaining(length);
+     bool faultError(false);
+
+    if(Disconnected == state)
+    {
+       std::cerr << "disconnected, need not write" << std::endl; 
+       return;
+    }
+    //如该写数据缓冲区内有数据，直接写入socket缓冲区会导致数据交叠
+    if(!event->isWriting() && writeBuf.isEmpty())
+    {
+        n = SocketOperation::write(event->getFd(), data, length);
+        if(n >= 0)
+        {
+            remaining = length - n;
+            if(remaining == 0 && writeCompleteCallback)
+            {
+                writeCompleteCallback(shared_from_this());
+            }
+        }else
+        {
+            n = 0;
+            //写操作会阻塞，在非阻塞套接字上出现
+            if(errno != EWOULDBLOCK)
+            {
+                std::cerr << "Write data error: " << std::strerror(errno) << " (" << errno << ")" << std::endl;
+
+                if (errno == EPIPE || errno == ECONNRESET || errno == ENOTCONN || errno == EINVAL)
+                {
+                    faultError = true;
+                }
+            }
+        }
+    }
+
+    if (!faultError && remaining > 0)
+    {
+        writeBuf.append(static_cast<const char*>(data)+n, remaining);
+        if (!event->isWriting())
+        {
+            event->enableWriting(true);
+        }
+    }
+
+}
+
+void TcpConnect::writeInLoop(const void* data, uint32_t length)
+{
+    loop->runInLoop([this,data,length]{
+        write(data,length);
+    });
+}
+
+void TcpConnect::shutdownWrite()
+{
+    if (state == Connected)
+    {
+        state = Disconnecting;
+        socket->shutdownWrite();
+    }
+}
+
+
+}

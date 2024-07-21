@@ -18,7 +18,9 @@ SRCS = src/event/epoll.cpp \
 	   src/net/tcp/socketOperation.cpp \
 	   src/net/tcp/socketAddr.cpp \
 	   src/net/tcp/socket.cpp \
-	   src/net/tcp/tcpAccept.cpp
+	   src/net/tcp/tcpAccept.cpp\
+	   src/net/tcp/buffer.cpp \
+	   src/net/tcp/tcpConnect.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

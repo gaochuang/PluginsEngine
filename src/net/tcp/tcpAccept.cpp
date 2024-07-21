@@ -40,7 +40,6 @@ void TcpAccept::setConnectCallback(const connectCallBack callback)
 void TcpAccept::acceptHandle()
 {
     SocketAddr connectAddr;
-
     auto fd = socket->accept(connectAddr);
     if( fd > 0)
     {

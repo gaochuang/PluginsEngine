@@ -39,6 +39,9 @@
         "typeinfo": "cpp",
         "iomanip": "cpp",
         "memory": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "cmath": "cpp",
+        "deque": "cpp",
+        "numeric": "cpp"
     }
 }
