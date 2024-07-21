@@ -10,15 +10,21 @@ EventThreadPool::EventThreadPool(EventLoop* loop):mainLoop(loop),started(false),
 
 }
 
+EventThreadPool::~EventThreadPool()
+{
+
+}
+
 void EventThreadPool::init()
 {
     int i(0);
-    while( i-- < threadNum )
+    while( i < threadNum )
     {
         std::shared_ptr<EventLoopThread> thread(new EventLoopThread());
         thread->start();
         threadPoll.push_back(thread);
         eventLoopPoll.push_back(thread->getEventLoopInThread());
+        i--;
     }
 
     started = true;

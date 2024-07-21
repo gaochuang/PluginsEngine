@@ -42,6 +42,7 @@
         "string": "cpp",
         "cmath": "cpp",
         "deque": "cpp",
-        "numeric": "cpp"
+        "numeric": "cpp",
+        "atomic": "cpp"
     }
 }

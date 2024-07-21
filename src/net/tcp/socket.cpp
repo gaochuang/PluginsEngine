@@ -51,6 +51,5 @@ int Socket::shutdownWrite()
     SocketOperation::shutdownWrite(socketFd);
 }
 
-
 }
 

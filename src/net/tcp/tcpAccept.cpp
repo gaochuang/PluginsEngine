@@ -50,8 +50,8 @@ void TcpAccept::acceptHandle()
         {
            ::close(fd);
         }
-        
     }
+
 }
 
 }
