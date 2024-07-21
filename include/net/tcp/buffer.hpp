@@ -29,7 +29,6 @@ public:
     bool isReadable() const;
     bool isEmpty() const;
 
-
     int readFromIO(int fd, int& errorNo);
     uint32_t writableBytes() const;
     uint32_t readableBytes() const;

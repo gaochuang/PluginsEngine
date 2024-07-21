@@ -15,6 +15,7 @@ namespace reactorFramework
 
 class TcpServer
 {
+public:
     explicit TcpServer(EventLoop* loop, SocketAddr& addr);
 
     TcpServer(const TcpServer&) = delete;

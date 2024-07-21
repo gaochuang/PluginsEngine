@@ -24,7 +24,7 @@ void EventThreadPool::init()
         thread->start();
         threadPoll.push_back(thread);
         eventLoopPoll.push_back(thread->getEventLoopInThread());
-        i--;
+        i++;
     }
 
     started = true;

@@ -24,7 +24,7 @@ inline bool Buffer::isReadable() const
     return readIndex < writeIndex;
 }
 
-inline bool Buffer::isEmpty() const 
+bool Buffer::isEmpty() const 
 {
     return readIndex == writeIndex;
 }
@@ -34,7 +34,7 @@ inline uint32_t Buffer::writableBytes() const
     return buffer.size() - writeIndex;
 }
 
-inline uint32_t Buffer::readableBytes() const 
+uint32_t Buffer::readableBytes() const 
 {
     return writeIndex - readIndex;
 }
@@ -120,7 +120,7 @@ const uint8_t* Buffer::readIndexPtr() const
     return bufferPtr() + readIndex;
 }
 
-inline void Buffer::clearReadIndex(uint32_t len)
+void Buffer::clearReadIndex(uint32_t len)
 {
     if(len < readableBytes())
     {
