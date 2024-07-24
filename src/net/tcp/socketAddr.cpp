@@ -1,6 +1,7 @@
 #include "socketAddr.hpp"
 #include "socketOperation.hpp"
 
+#include <iostream>
 namespace reactorFramework
 {
 
@@ -24,7 +25,7 @@ SocketAddr::SocketAddr(struct sockaddr_in addr): valid(true), sockAddr(addr)
 SocketAddr::SocketAddr(const std::string& addrPort):valid(false)
 {
     struct sockaddr_in addrIn;
-    if(!SocketOperation::toAddrIpv4(addrPort,addrIn))
+    if(!SocketOperation::toAddrIpv4(addrPort, addrIn))
     {
         return ;
     }
@@ -34,10 +35,13 @@ SocketAddr::SocketAddr(const std::string& addrPort):valid(false)
 SocketAddr::SocketAddr(const std::string& addr, uint16_t port):valid(false)
 {
     struct sockaddr_in addrIn;
-    if(!SocketOperation::toAddrIpv4(addr,port,addrIn))
+    if(!SocketOperation::toAddrIpv4(addr, port, addrIn))
     {
+        std::cerr << "toAddrIpv4 failed, addr"<<addr << "port: " << port << std::endl;
         return ;
     }
+
+    std::cout << "server ip address: " << addr << "port: "<< port << std::endl;
 
     *this = SocketAddr(addrIn);
 }
@@ -80,7 +84,7 @@ bool SocketAddr::isValid()
 
 std::string SocketAddr::toString() const
 {
-    SocketOperation::toString(sockAddr);
+    return SocketOperation::toString(sockAddr);
 }
 
 }
