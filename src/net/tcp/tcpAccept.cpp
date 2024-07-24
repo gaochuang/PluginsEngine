@@ -1,11 +1,11 @@
 #include "tcpAccept.hpp"
 #include "socketOperation.hpp"
 #include <memory>
-
+#include <iostream>
 namespace reactorFramework
 {
 
-TcpAccept::TcpAccept(EventLoop* loop, SocketAddr& addr):eventLoop(loop),
+TcpAccept::TcpAccept(EventLoop* loop, SocketAddr addr):eventLoop(loop),
       socket(std::make_shared<Socket>(SocketOperation::createNonblockingSocket())),
       event(std::make_shared<Event>(loop, socket->getSocketFd())),
       listening(false)
@@ -34,7 +34,7 @@ bool TcpAccept::isListen()
 
 void TcpAccept::setConnectCallback(const connectCallBack callback)
 {
-    this->callBack = callBack;
+    callBack = callback;
 }
 
 void TcpAccept::acceptHandle()
