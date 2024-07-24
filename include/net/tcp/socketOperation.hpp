@@ -33,8 +33,8 @@ public:
     static bool toAddrIpv4(const std::string& addr, uint16_t port, struct sockaddr_in& addrIn);
     static bool toAddrIpv4(uint16_t port, struct sockaddr_in& addrIn);
 
-    static std::string ipToString(const struct sockaddr_in& addr);
-    static std::string toString(const struct sockaddr_in& addr);
+    static std::string ipToString(const struct sockaddr_in addr);
+    static std::string toString(const struct sockaddr_in addr);
 
     template<typename T>
     static bool stringToInt(const std::string& str, T& num);
