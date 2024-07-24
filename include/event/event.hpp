@@ -17,10 +17,10 @@ class Event
 public:
     //https://man7.org/linux/man-pages/man2/epoll_ctl.2.html
 
-    const static int noneEventFlag;
-    const static int readEventFlag;
-    const static int writeEventFlag;
-    const static int errorEventFlag;
+    static constexpr int noneEventFlag = 0;
+    static constexpr int readEventFlag =  EPOLLIN | EPOLLPRI;
+    static constexpr int writeEventFlag = EPOLLOUT;
+    static constexpr int errorEventFlag = EPOLLERR;
 
     Event(EventLoop* loop, int fd);
     ~Event();
@@ -30,9 +30,9 @@ public:
     Event(const Event&&) = delete;
     Event& operator=(const Event&&) = delete;
 
-    int getFd() const;
+    int getFd() const noexcept;
 
-    uint32_t getEvents() const;
+    uint32_t getEvents() const noexcept;
 
     void handle(uint32_t revents);
     void removeFromLoop();
@@ -51,18 +51,16 @@ public:
 
 
 private:
-    EventLoop* m_loop;
-    int m_eventFd;
-    uint32_t m_events;
-  
-
-    void update();
+    EventLoop* loop;
+    int eventFd;
+    uint32_t events;
 
     Callback readCallback;
     Callback writeCallback;
     Callback errorCallback;
     Callback closeCallback;
-   
+
+    void update();
 };
 
 }
