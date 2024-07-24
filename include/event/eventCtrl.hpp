@@ -36,7 +36,7 @@ public:
 
 private:
     static const int activeEventLength;
-    std::unordered_map<int, std::weak_ptr<Event> > eventPool;
+    std::unordered_map<int, std::weak_ptr<Event>> eventPool;
 
     Epoll epoll;
     EventLoop* eventLoop;
@@ -47,4 +47,3 @@ private:
 
 }
 #endif
-
