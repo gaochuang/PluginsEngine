@@ -10,16 +10,24 @@
 namespace reactorFramework
 {
 
-TcpConnect::TcpConnect(EventLoop* loop, const struct sockaddr_in& addr, int fd):loop(loop),
-            socketAddr(addr),name(socketAddr.toString()),
+
+TcpConnect::TcpConnect(EventLoop* loop, struct sockaddr_in addr, int fd):loop(loop),
+            socketAddr(addr),
+            name(socketAddr.toString()),
             socket(std::make_shared<Socket>(fd)),
             event(std::make_shared<Event>(loop, fd)),
             state(Disconnected)
 {
+
     setNoDelay(true);
     loop->addEvent(event);
     event->setReadCallback(std::bind(&TcpConnect::readEvent, this));
+    event->setWriteCallback(std::bind(&TcpConnect::writeEvent, this));
+    event->setErrorCallback(std::bind(&TcpConnect::errorEvent, this));
+    event->setCloseCallback(std::bind(&TcpConnect::closeEvent, this));
+
 }
+
 
 TcpConnect::~TcpConnect()
 {
@@ -32,17 +40,17 @@ void TcpConnect::setNoDelay(bool enable)
     socket->setTcpNoDelay(enable);
 }
 
-void TcpConnect::setMessageCallback(const MessageCallback callback)
+void TcpConnect::setMessageCallback(const oneMessageCallback callback)
 {
     messageCallback = callback;
 }
 
-void TcpConnect::setCloseCallback(const CloseCallback callback)
+void TcpConnect::setCloseCallback(const oneCloseCallback callback)
 {
     closeCallback = callback;
 }
 
-void TcpConnect::setWriteCompleteCallback(const WriteCompleteCallback callback)
+void TcpConnect::setWriteCompleteCallback(const oneWriteCompleteCallback callback)
 {
     writeCompleteCallback = callback;
 }
