@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <sys/uio.h>
 
 namespace reactorFramework
 {
@@ -55,11 +56,13 @@ void SocketOperation::setTcpNoDelay(int fd, bool isEnable)
 
 int SocketOperation::bind(int sockfd, const struct sockaddr_in* addr)
 {
-    auto ret = ::bind(sockfd, (struct sockaddr *)addr, sizeof(struct sockaddr_in));
+    auto ret = ::bind(sockfd,  (struct sockaddr *)addr, (sizeof(struct sockaddr)));
     if(ret < 0)
     {
         std::cerr << "Failed to bind socket fd " << sockfd << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
     }
+
+    return ret;
 }
 
 int SocketOperation::listen(int sockfd)
@@ -69,6 +72,7 @@ int SocketOperation::listen(int sockfd)
     {
         std::cerr << "Failed to listen socket fd " << sockfd << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
     }
+
     return ret;
 }
 
@@ -90,7 +94,7 @@ int SocketOperation::accept(int sockfd, struct sockaddr_in* addr)
     auto ret = ::accept(sockfd, (struct sockaddr*)addr, &len);
     if(ret < 0)
     {
-      std::cerr << "accecpt failed socket fd: " << sockfd << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;  
+      std::cerr << "accept failed socket fd: " << sockfd << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;  
     }
 
     return ret;
@@ -118,7 +122,7 @@ void SocketOperation::getAddrAnyIpv4(struct sockaddr_in& addrIn, uint16_t port)
 {
     ::bzero(&addrIn, sizeof(struct sockaddr_in));
     addrIn.sin_family = AF_INET;
-    addrIn.sin_port = port;
+    addrIn.sin_port = htons(port);
     addrIn.sin_addr.s_addr = Ipv4AddrAny;
 }
 
@@ -163,7 +167,7 @@ bool SocketOperation::toAddrIpv4(const std::string& addr, uint16_t port, struct 
     }
 
     uint16_t addrArray[4];
-    for(int i = 0;i < 4; i++)
+    for(int i = 0; i < 4; i++)
     {
         if(!stringToInt<uint16_t > (ip[i],addrArray[i]))
         {
@@ -175,7 +179,7 @@ bool SocketOperation::toAddrIpv4(const std::string& addr, uint16_t port, struct 
         }
     }
 
-    uint32_t addr32;
+    uint32_t addr32(0);
     for(int i = 0; i < 4; i++)
     {
         addr32 <<= 8;
@@ -198,11 +202,11 @@ bool SocketOperation::toAddrIpv4(uint16_t port, struct sockaddr_in& addrIn)
     return true;
 }
 
-std::string SocketOperation::ipToString(const struct sockaddr_in& addr)
+std::string SocketOperation::ipToString(const struct sockaddr_in addr)
 {
     std::stringstream stream;
     uint8_t* addrArray = (uint8_t*)&addr.sin_addr.s_addr;
-    for(int i = 0; i < 4;i++)
+    for(int i = 0; i < 4; i++)
     {
         stream << (uint16_t)addrArray[i];
         if(i!=3)
@@ -210,11 +214,12 @@ std::string SocketOperation::ipToString(const struct sockaddr_in& addr)
             stream << ".";
         }
     }
+
     stream << ":" << (((addr.sin_port << 8)&0x00ffff) | (addr.sin_port>>8));
     return stream.str();
 }
 
-std::string SocketOperation::toString(const struct sockaddr_in& addr)
+std::string SocketOperation::toString(const struct sockaddr_in addr)
 {
     std::string addrPort;
     addrPort = ipToString(addr);
