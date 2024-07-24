@@ -20,15 +20,15 @@ public:
     Epoll(const Epoll&&) = delete;
     Epoll& operator=(const Epoll&&) = delete;
 
-    bool addEvent(Event* ioEvent) noexcept;
-    bool removeEvent(Event* ioEvent) noexcept;
-    bool modifyEvent(Event* ioEvent) noexcept;
+    bool addEvent(Event* Event) noexcept;
+    bool removeEvent(Event* Event) noexcept;
+    bool modifyEvent(Event* Event) noexcept;
     bool removeEvent(int fd) noexcept;
     int waitEvent(struct epoll_event* eventList, int eventSize, int timeout) noexcept;
 
 private:
-   int epollCtrl(int operation, int fd, int events) noexcept;
-   int m_epollFd;
+   bool epollCtrl(int operation, int fd, int events) noexcept;
+   int epollFd;
 };
 
 }
