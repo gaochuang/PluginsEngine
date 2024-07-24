@@ -1,16 +1,11 @@
 #include "event.hpp"
 #include "eventLoop.hpp"
+#include <iostream>
 
 namespace reactorFramework
 {
 
-
-const int Event::noneEventFlag = 0;
-const int Event::readEventFlag = EPOLLIN | EPOLLPRI;
-const int Event::writeEventFlag = EPOLLOUT;
-const int Event::errorEventFlag = EPOLLERR;
-
-Event::Event(EventLoop* loop, int fd) : m_loop(loop), m_eventFd(fd), m_events(0)
+Event::Event(EventLoop* loop, int fd) : loop(loop), eventFd(fd), events(0)
 {
 
 }
@@ -23,54 +18,54 @@ Event::~Event()
 void Event::enableReading(bool isEnable)
 {
     if(isEnable)
-        m_events |= readEventFlag;
+        events |= readEventFlag;
     else
-        m_events &= ~readEventFlag;
+        events &= ~readEventFlag;
     update();
 }
 
 void Event::enableWriting(bool isEnable)
 {
     if(isEnable)
-        m_events |= writeEventFlag;
+        events |= writeEventFlag;
     else
-        m_events &= ~writeEventFlag;
+        events &= ~writeEventFlag;
     update();
 }
 
 void Event::enableErrorEvent(bool isEnable)
 {
     if(isEnable)
-        m_events |= errorEventFlag;
+        events |= errorEventFlag;
     else
-        m_events &= ~errorEventFlag;
+        events &= ~errorEventFlag;
     update();
 }
 
 void Event::disableAll()
 {
-    m_events =  noneEventFlag;
+    events =  noneEventFlag;
     update();
 }
 
 bool Event::isWriting()
 {
-    return m_events & writeEventFlag;
+    return events & writeEventFlag;
 }
 
 bool Event::isReading()
 {
-    return m_events & readEventFlag;
+    return events & readEventFlag;
 }
 
-int Event::getFd() const
+int Event::getFd() const noexcept
 {
-   return m_eventFd;
+   return eventFd;
 }
 
-uint32_t Event::getEvents() const
+uint32_t Event::getEvents() const noexcept
 {
-    return m_events;
+    return events;
 }
 
 void Event::setReadCallback(Callback cb)
@@ -95,12 +90,12 @@ void Event::setCloseCallback(Callback cb)
 
 void Event::update()
 {
-    m_loop->modifyEvent(m_eventFd);
+    loop->modifyEvent(eventFd);
 }
 
 void Event::removeFromLoop()
 {
-    m_loop->removeEvent(m_eventFd);
+    loop->removeEvent(eventFd);
 }
 
 void Event::handle(uint32_t events)
@@ -140,4 +135,3 @@ void Event::handle(uint32_t events)
 }
 
 }
-
