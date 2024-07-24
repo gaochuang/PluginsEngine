@@ -4,7 +4,9 @@
 #include "eventLoop.hpp"
 #include "socket.hpp"
 #include "buffer.hpp"
+
 #include <memory>
+#include <functional>
 
 namespace reactorFramework
 {
@@ -12,11 +14,12 @@ namespace reactorFramework
 class TcpConnect : public std::enable_shared_from_this<TcpConnect>
 {
 public:
-    using MessageCallback = std::function<void(std::shared_ptr<TcpConnect>, Buffer&)>;
-    using CloseCallback = std::function<void(std::shared_ptr<TcpConnect>)>;
-    using WriteCompleteCallback = std::function<void(std::shared_ptr<TcpConnect>)>;
+    using oneMessageCallback = std::function<void (std::shared_ptr<TcpConnect>, Buffer&)>;
+    using oneCloseCallback = std::function<void (std::shared_ptr<TcpConnect>)>;
+    using oneWriteCompleteCallback = std::function<void (std::shared_ptr<TcpConnect>)>;
+    
+    TcpConnect(EventLoop* loop, struct sockaddr_in addr, int fd);
 
-    TcpConnect(EventLoop* loop, const struct sockaddr_in& addr, int fd);
     TcpConnect(const TcpConnect&) = delete;
     TcpConnect& operator=(const TcpConnect&) = delete;
     TcpConnect(const TcpConnect&&) = delete;
@@ -24,9 +27,9 @@ public:
 
     ~TcpConnect();
 
-    void setMessageCallback(MessageCallback callback);
-    void setCloseCallback(CloseCallback callback);
-    void setWriteCompleteCallback(WriteCompleteCallback callback);
+    void setMessageCallback(const oneMessageCallback callback);
+    void setCloseCallback(const oneCloseCallback callback);
+    void setWriteCompleteCallback(const oneWriteCompleteCallback callback);
 
 
     const SocketAddr& getAddr() const;
@@ -56,9 +59,9 @@ private:
     Buffer readBuf;
     Buffer writeBuf;
 
-    MessageCallback messageCallback;
-    CloseCallback closeCallback;
-    WriteCompleteCallback writeCompleteCallback;
+    oneMessageCallback messageCallback;
+    oneCloseCallback closeCallback;
+    oneWriteCompleteCallback writeCompleteCallback;
 
     enum ConnectState
     {
