@@ -8,9 +8,9 @@
 namespace reactorFramework
 {
 
-Epoll::Epoll() : m_epollFd(::epoll_create1(EPOLL_CLOEXEC))
+Epoll::Epoll() : epollFd(::epoll_create1(EPOLL_CLOEXEC))
 {
-    if (m_epollFd < 0)
+    if (epollFd < 0)
     {
         std::cerr << "create epoll fd failed, reason: " << strerror(errno) << std::endl;
     }
@@ -18,22 +18,25 @@ Epoll::Epoll() : m_epollFd(::epoll_create1(EPOLL_CLOEXEC))
 
 Epoll::~Epoll()
 {
-    ::close(m_epollFd);
+    if(epollFd >= 0)
+    {
+        ::close(epollFd);
+    }
 }
 
-int Epoll::epollCtrl(int operation, int fd, int events) noexcept
+bool Epoll::epollCtrl(int operation, int fd, int events) noexcept
 {
     struct epoll_event event = {};
 
     event.events = events;
     event.data.fd = fd;
 
-    return epoll_ctl(m_epollFd, operation, fd, &event);
+    return epoll_ctl(epollFd, operation, fd, &event) == 0;
 }
 
 bool Epoll::addEvent(Event* event) noexcept
 {
-    if (epollCtrl(EPOLL_CTL_ADD, event->getFd(), event->getEvents()) < 0)
+    if (!epollCtrl(EPOLL_CTL_ADD, event->getFd(), event->getEvents()))
     {
         std::cerr << "Failed to add event to epoll:  " << strerror(errno) << std::endl;
         return false;
@@ -43,7 +46,7 @@ bool Epoll::addEvent(Event* event) noexcept
 
 bool Epoll::removeEvent(Event* event) noexcept
 {
-    if (epollCtrl(EPOLL_CTL_DEL, event->getFd(), event->getEvents()) < 0 )
+    if (!epollCtrl(EPOLL_CTL_DEL, event->getFd(), event->getEvents()))
     {
         std::cerr << "Failed to remove event from epoll  " << strerror(errno) << std::endl;
         return false;
@@ -53,7 +56,7 @@ bool Epoll::removeEvent(Event* event) noexcept
 
 bool Epoll::removeEvent(int fd) noexcept
 {
-    if (epollCtrl(EPOLL_CTL_DEL, fd, 0) < 0)
+    if (!epollCtrl(EPOLL_CTL_DEL, fd, 0))
     {
         std::cerr << "Failed to remove event from epoll  " << strerror(errno) << std::endl;
         return false;
@@ -64,9 +67,9 @@ bool Epoll::removeEvent(int fd) noexcept
 
 bool Epoll::modifyEvent(Event* event) noexcept
 {
-    if (epollCtrl(EPOLL_CTL_MOD, event->getFd(), event->getEvents()) < 0)
+    if (!epollCtrl(EPOLL_CTL_MOD, event->getFd(), event->getEvents()))
     {
-        std::cerr << "ailed to modify event in epoll:  " << strerror(errno) << std::endl;
+        std::cerr << "Failed to modify event in epoll:  " << strerror(errno) << std::endl;
         return false;
     }
     return true;    
@@ -74,7 +77,7 @@ bool Epoll::modifyEvent(Event* event) noexcept
 
 int Epoll::waitEvent(struct epoll_event* eventList, int eventSize, int timeout) noexcept
 {
-    return epoll_wait(m_epollFd, eventList, eventSize, timeout);
+    return epoll_wait(epollFd, eventList, eventSize, timeout);
 
 }
 
