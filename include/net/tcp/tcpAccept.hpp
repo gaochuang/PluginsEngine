@@ -9,10 +9,11 @@ namespace reactorFramework
 {
 
 using  connectCallBack = std::function<void (int sockfd,const SocketAddr&)> ;
+
 class TcpAccept
 {
 public:
-    TcpAccept(EventLoop* loop, SocketAddr& addr);
+    TcpAccept(EventLoop* loop, SocketAddr addr);
 
     TcpAccept(const TcpAccept&) = delete;
     TcpAccept& operator=(const TcpAccept&) = delete;
