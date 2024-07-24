@@ -1,6 +1,6 @@
 #include "socket.hpp"
 #include "socketOperation.hpp"
-
+#include <iostream>
 namespace reactorFramework
 {
 
@@ -48,7 +48,7 @@ void Socket::setTcpNoDelay(bool enable)
 
 int Socket::shutdownWrite()
 {
-    SocketOperation::shutdownWrite(socketFd);
+    return SocketOperation::shutdownWrite(socketFd);
 }
 
 }
