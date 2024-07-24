@@ -26,6 +26,7 @@ void Thread::beginRun()
     {
         condition.wait(lock);
     }
+
     run();
 }
 
