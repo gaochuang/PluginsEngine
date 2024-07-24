@@ -55,10 +55,11 @@ EventLoop* EventThreadPool::getOneLoopFromPool()
     }
 
     threadIndex++;
-    if(threadIndex >= threadNum)
+    if(threadIndex >= eventLoopPoll.size())
     {
         threadIndex = 0;
     }
+
     return eventLoopPoll[threadIndex];
 }
 
