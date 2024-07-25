@@ -8,15 +8,7 @@ using namespace std;
 
 using namespace reactorFramework;
 
-void handleSigAbort() 
-{
-    std::cout << "SIGABRT received" << std::endl;
-}
 
-void handleSigTerm() 
-{
-    std::cout << "SIGTERM received" << std::endl;
-}
 
 int main()
 {
@@ -24,8 +16,16 @@ int main()
 
     SignalMonitor sig(&loop);
 
-    sig.add(SIGABRT, handleSigAbort);
-    sig.add(SIGTERM, handleSigTerm);
+    // 使用lambda捕获loop的引用，并传递给信号处理函数
+    sig.add(SIGABRT, [&loop]() {
+        std::cout << "SIGABRT received" << std::endl;
+        loop.stop();
+    });
+
+    sig.add(SIGTERM, [&loop]() {
+        std::cout << "SIGTERM received" << std::endl;
+        loop.stop();
+    });
 
     loop.run();
 
