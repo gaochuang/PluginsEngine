@@ -8,7 +8,7 @@ namespace reactorFramework
 
 const int EventLoop::PollTimeMs = 3000;
 
-EventLoop::EventLoop() : eventCtrl(new EventCtrl(this)), 
+EventLoop::EventLoop() : running(true),eventCtrl(new EventCtrl(this)), 
                          threadId(Thread::getThreadId()),
                          timerQueue(new TimerQueue(this))
 {
@@ -79,12 +79,17 @@ void EventLoop::run()
         std::cout << "loop create and run in different thread" << threadId << std::endl;
     }
 
-    while(true)
+    while(running)
     {
         eventCtrl->waitAndRunHandler(PollTimeMs);
         runAllFunctionInLoop();
     }
 
+}
+
+void EventLoop::stop()
+{
+    running = false;
 }
 
 void EventLoop::runInLoop(const Callback callback)
