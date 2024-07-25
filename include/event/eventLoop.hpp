@@ -34,16 +34,19 @@ public:
     void removeEvent(int fd);
 
     void run();
+    void stop();
     void runInLoop(const Callback callback);
     void runOnceAfter(const Callback callback, uint32_t interval);
     void runEveryInterval(const Callback callback,uint32_t interval);
 private:
+    bool running;
     static const int PollTimeMs ;
     std::mutex mutex;
     std::shared_ptr<EventCtrl> eventCtrl;
     std::thread::id threadId;
     std::shared_ptr<TimerQueue> timerQueue;
     std::vector<Callback> callbacks;
+    
 
     void addFunInLoop(Callback func);
     void runAllFunctionInLoop();
