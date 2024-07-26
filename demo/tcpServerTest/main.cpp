@@ -1,7 +1,5 @@
 #include "testServerTest.hpp"
-
 #include <iostream>
-
 #include "eventLoop.hpp"
 #include "eventThreadPool.hpp"
 

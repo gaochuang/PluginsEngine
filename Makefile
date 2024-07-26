@@ -3,7 +3,7 @@ CXXFLAGS = -Wall -Wextra -pthread -O2 -fPIC -std=c++11
 
 LIBNAME = ractor
 
-INCLUDES = -Iinclude/event -Iinclude/thread -Iinclude/timer -Iinclude/net/tcp -Iinclude/signalMonitor
+INCLUDES = -Iinclude/event -Iinclude/thread -Iinclude/timer -Iinclude/net/tcp -Iinclude/signalMonitor -Iinclude/net/http
 
 SRCS = src/event/epoll.cpp \
        src/event/eventfd.cpp \
@@ -22,7 +22,11 @@ SRCS = src/event/epoll.cpp \
 	   src/net/tcp/tcpAccept.cpp\
 	   src/net/tcp/tcpConnect.cpp \
 	   src/net/tcp/tcpServer.cpp \
-	   src/signalMonitor/signalMonitor.cpp
+	   src/signalMonitor/signalMonitor.cpp \
+	   src/net/http/httpContext.cpp\
+	   src/net/http/httpRequest.cpp\
+	   src/net/http/httpResponse.cpp\
+	   src/net/http/httpServer.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
