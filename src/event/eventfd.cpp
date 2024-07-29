@@ -1,58 +1,99 @@
 #include "eventfd.hpp"
+
 #include <unistd.h>
 #include <cstring>
 #include <stdexcept>
 #include <stddef.h>
 #include <sys/types.h>
 #include <iostream>
+#include <utility>
 
 namespace reactorFramework
 {
 
-EventFD::EventFD(int flags) : m_fd(-1)
+void execute(const Callback& callback) noexcept
 {
-    m_fd = ::eventfd(0, flags);
-    if (m_fd == -1) 
-    {
-        throw std::runtime_error("Failed to create event fd");
-    }
+    callback();
 }
 
-EventFD::~EventFD()
+EventFD::EventFD(EventLoop* eventLoop):loop(eventLoop), eventFd(createEventFd()), event(std::make_shared<Event>(loop, eventFd)) 
 {
-    ::close(m_fd);
+    loop->addEvent(event);
+    event->enableReading(true);
+    event->setReadCallback(std::bind(&EventFD::handleEvents, this));
 }
 
-void EventFD::notify(uint64_t value)
+int EventFD::createEventFd()
 {
-    std::lock_guard<std::mutex> lock(mutex_);
-    auto ret = TEMP_FAILURE_RETRY(::write(m_fd, (void*)&value, sizeof(uint64_t)));
-    if (ret != sizeof(uint64_t))
+    const int ret(::eventfd(0U,  EFD_NONBLOCK | EFD_CLOEXEC));
+    if (ret == -1)
     {
-        throw std::system_error(errno, std::system_category(), "write");
-    }
-}
-
-uint64_t EventFD::wait()
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-    uint64_t value = 0;
-    auto ret = TEMP_FAILURE_RETRY(::read(m_fd, (void*)&value, sizeof(uint64_t)));
-
-    if ((-1 == ret) && (EAGAIN != errno))
-    {
-        throw std::system_error(errno, std::system_category(), "read");
-    }else if ((-1 == ret) && (EAGAIN == errno))
-    {
-        std::cout << "read failed, reason: " << strerror(errno) << std::endl;
+        std::cout << "event fd error" << ::strerror(errno)<<std::endl;
     }
     
-    return value;
+    return ret;
 }
 
-int EventFD::getEventFd() const
+
+void EventFD::post(const Callback& callback)
 {
-    return m_fd;
+    postImpl(callback);
+}
+
+void EventFD::post(Callback&& callback)
+{
+    postImpl(std::move(callback));
+}
+
+template <typename CallBackType>
+void EventFD::postImpl(CallBackType&& callback)
+{
+    if(!callback)
+    {
+        std::cerr << "callback is empty" << std::endl;
+        return;
+    }
+    atomicPushBack(std::forward<CallBackType>(callback));
+    static const uint64_t value(1U);
+    ::write(eventFd, &value, sizeof(value));
+}
+
+template <typename CallbackType>
+void EventFD::atomicPushBack(CallbackType&& callback)
+{
+    std::unique_lock<std::mutex> lock(callbacksMutex);
+    callbacks.push_back(std::forward<CallbackType>(callback));
+}
+
+EventFD::Callbacks EventFD::atomicPopAll()
+{
+    std::unique_lock<std::mutex> lock(callbacksMutex);
+    Callbacks extractedCallbacks;
+    std::swap(callbacks, extractedCallbacks);
+    return extractedCallbacks;
+}
+
+void EventFD::handleEvents()
+{
+    uint64_t value;
+    ::read(eventFd, &value, sizeof(value));
+    executeCallbacks();
+}
+
+void EventFD::executeCallbacks()
+{
+    Callbacks callbacks(atomicPopAll());
+    while (!callbacks.empty())
+    {
+        popAndExecuteFirstCallback(callbacks);
+    }   
+}
+
+void EventFD::popAndExecuteFirstCallback(Callbacks& callbacks)
+{
+    const auto callback(std::move(callbacks.front()));
+    callbacks.pop_front();
+    execute(callback);
 }
 
 }
