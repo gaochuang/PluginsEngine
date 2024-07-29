@@ -1,5 +1,7 @@
 #include "eventLoop.hpp"
 #include "thread.hpp"
+#include "eventCallbackQueue.hpp"
+#include "eventfd.hpp"
 
 #include <iostream>
 
@@ -71,6 +73,26 @@ void EventLoop::removeEvent(int fd)
     eventCtrl->deleteEvent(fd);
 }
 
+eventCallbackQueue& EventLoop::getEventCallbackQueue()
+{
+    if(!callbackQueue)
+    {
+        callbackQueue = std::make_shared<EventFD>(this);
+    }
+
+    return *callbackQueue;
+}
+
+void EventLoop::postCallback(const Callback& callback)
+{
+    getEventCallbackQueue().post(callback);
+}
+
+void EventLoop::postCallback(Callback&& callback)
+{
+    getEventCallbackQueue().post(std::move(callback));
+}
+
 void EventLoop::run()
 {
     if(!inThisThread())
@@ -115,6 +137,5 @@ void EventLoop::runEveryInterval(const Callback callback, uint32_t interval)
 {
     timerQueue->runEveryInterval(callback, interval);
 }
-
 
 }
