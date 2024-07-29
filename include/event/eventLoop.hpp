@@ -8,6 +8,7 @@ EventLoop类用来管理事件循环和回调函数的执行
 #include "event.hpp"
 #include "eventCtrl.hpp"
 #include "timerQueue.hpp"
+#include "eventCallbackQueue.hpp"
 
 #include <memory>
 #include <mutex>
@@ -38,6 +39,9 @@ public:
     void runInLoop(const Callback callback);
     void runOnceAfter(const Callback callback, uint32_t interval);
     void runEveryInterval(const Callback callback,uint32_t interval);
+    eventCallbackQueue& getEventCallbackQueue();
+    void postCallback(const Callback& callback);
+    void postCallback(Callback&& callback);
 private:
     bool running;
     static const int PollTimeMs ;
@@ -46,12 +50,11 @@ private:
     std::thread::id threadId;
     std::shared_ptr<TimerQueue> timerQueue;
     std::vector<Callback> callbacks;
+    std::shared_ptr<eventCallbackQueue> callbackQueue;
     
-
     void addFunInLoop(Callback func);
     void runAllFunctionInLoop();
     bool inThisThread() const;
-
 };
 
 }
