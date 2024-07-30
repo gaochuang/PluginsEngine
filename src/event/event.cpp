@@ -108,14 +108,6 @@ void Event::handle(uint32_t events)
         }
     }
 
-    if (events & EPOLLERR)
-    {
-        if (errorCallback)
-        {
-            errorCallback();
-        }
-    }
-
    // EPOLLRDHUP Stream socket peer closed connection, or shut down writing half of connection
     if (events & (EPOLLIN | EPOLLPRI | EPOLLRDHUP))
     {
@@ -130,6 +122,14 @@ void Event::handle(uint32_t events)
         if (writeCallback)
         {
             writeCallback();
+        }
+    }
+
+    if (events & EPOLLERR)
+    {
+        if (errorCallback)
+        {
+            errorCallback();
         }
     }
 }
