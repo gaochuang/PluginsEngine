@@ -1,5 +1,5 @@
 /*
-EventCtrl 责管理事件池和事件处理机制来添加、删除、修改事件，并在事件发生时调用相应的处理函数
+EventCtrl 维护事件注册表、事件分发功能
 */
 #ifndef EVENT_CTRL_HPP
 #define EVENT_CTRL_HPP
@@ -36,10 +36,12 @@ public:
 
 private:
     static const int activeEventLength;
+    //事件注册表
     std::unordered_map<int, std::weak_ptr<Event>> eventPool;
 
     Epoll epoll;
     EventLoop* eventLoop;
+    //从epoll读取到的事件
     std::vector<struct epoll_event> activeEvents;
 
 };

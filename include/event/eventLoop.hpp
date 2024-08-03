@@ -39,7 +39,6 @@ public:
     void runInLoop(const Callback callback);
     void runOnceAfter(const Callback callback, uint32_t interval);
     void runEveryInterval(const Callback callback,uint32_t interval);
-    eventCallbackQueue& getEventCallbackQueue();
     void postCallback(const Callback& callback);
     void postCallback(Callback&& callback);
 private:
@@ -51,7 +50,7 @@ private:
     std::shared_ptr<TimerQueue> timerQueue;
     std::vector<Callback> callbacks;
     std::shared_ptr<eventCallbackQueue> callbackQueue;
-    
+    eventCallbackQueue& getEventCallbackQueue();
     void addFunInLoop(Callback func);
     void runAllFunctionInLoop();
     bool inThisThread() const;

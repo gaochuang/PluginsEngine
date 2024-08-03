@@ -13,11 +13,17 @@ EventCtrl::EventCtrl(EventLoop* el) : eventLoop(el), activeEvents(activeEventLen
 
 EventCtrl::~EventCtrl()
 {
+    for(const auto& pair : eventPool)
+    {
+        int fd = pair.first;
+        epoll.removeEvent(fd);
+    }
     eventPool.clear();
 }
 
 void EventCtrl::addEvent(std::shared_ptr<Event> event)
 {
+    //添加到event注册表，再加入到epoll中
     eventPool[event->getFd()] = event;
     epoll.addEvent(event.get());
 }
@@ -27,6 +33,7 @@ void EventCtrl::deleteEvent(std::shared_ptr<Event> event)
     /*
     bug: remove fd epoll -> close fd
     */
+   //先从epoll中移除，再从注册事件表中移除
     epoll.removeEvent(event.get());
     eventPool.erase(event->getFd());
 }
@@ -65,6 +72,9 @@ void EventCtrl::deleteEvent(int fd)
     }
 }
 
+/*
+完成事件分发功能 
+*/
 void EventCtrl::waitAndRunHandler(int timeMs)
 {
     auto num = epoll.waitEvent(&*activeEvents.begin(),activeEvents.size(),timeMs);
@@ -73,14 +83,15 @@ void EventCtrl::waitAndRunHandler(int timeMs)
         return;
     }
 
-    for(int i = 0; i < num; i++)
+    for(const auto& event : activeEvents)
     {
-        auto fd = activeEvents[i].data.fd;
-        auto event = eventPool[fd].lock();
-        if (event)
+        auto fd = event.data.fd;
+        auto eventPtr = eventPool[fd].lock();
+        if (eventPtr)
         {
-            event->handle(activeEvents[i].events);
-        }else
+            eventPtr->handle(event.events);
+        }
+        else
         {
             deleteEvent(fd);
         }
