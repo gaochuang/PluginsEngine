@@ -24,8 +24,11 @@ void EventCtrl::addEvent(std::shared_ptr<Event> event)
 
 void EventCtrl::deleteEvent(std::shared_ptr<Event> event)
 {
-    eventPool.erase(event->getFd());
+    /*
+    bug: remove fd epoll -> close fd
+    */
     epoll.removeEvent(event.get());
+    eventPool.erase(event->getFd());
 }
 
 void EventCtrl::modifyEvent(std::shared_ptr<Event> event)
@@ -54,6 +57,9 @@ void EventCtrl::deleteEvent(int fd)
 {
     if (eventPool.find(fd) != eventPool.end())
     {
+        /*
+        之前出现先close,后从epoll中移除问题
+        */
         epoll.removeEvent(fd);
         eventPool.erase(fd);
     }

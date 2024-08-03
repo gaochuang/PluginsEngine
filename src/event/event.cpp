@@ -98,8 +98,24 @@ void Event::removeFromLoop()
     loop->removeEvent(eventFd);
 }
 
+
+/*
+如果callback中关闭fd，需要提前从epoll中移除 fd 
+*/
 void Event::handle(uint32_t events)
 {
+    //出现错误
+    if (events & EPOLLERR)
+    {
+        if (errorCallback)
+        {
+            //如果callback中关闭fd，需要提前从epoll中移除 fd
+            errorCallback();
+        }
+        return;
+    }
+
+    //EPOLLHUP 客户端主动关闭，会读到FIN包
     if ((events & EPOLLHUP) && !(events & EPOLLIN))
     {
         if (readCallback)
@@ -108,7 +124,7 @@ void Event::handle(uint32_t events)
         }
     }
 
-   // EPOLLRDHUP Stream socket peer closed connection, or shut down writing half of connection
+   // 对端socket 关闭，EPOLLRDHUP 是判断对端socket 是否关闭的首要标志位
     if (events & (EPOLLIN | EPOLLPRI | EPOLLRDHUP))
     {
         if (readCallback)
@@ -122,14 +138,6 @@ void Event::handle(uint32_t events)
         if (writeCallback)
         {
             writeCallback();
-        }
-    }
-
-    if (events & EPOLLERR)
-    {
-        if (errorCallback)
-        {
-            errorCallback();
         }
     }
 }
