@@ -1,0 +1,35 @@
+@startuml
+namespace reactorFramework {
+
+class EventLoop {
+}
+
+class Event {
+    - EventLoop* loop
+    - int eventFd
+    - uint32_t events
+    - Callback readCallback
+    - Callback writeCallback
+    - Callback errorCallback
+    - Callback closeCallback
+    --
+    + int getFd() const noexcept
+    + uint32_t getEvents() const noexcept
+    + void handle(uint32_t revents)
+    + void removeFromLoop()
+    + void enableReading(bool isEnable)
+    + void enableWriting(bool isEnable)
+    + void enableErrorEvent(bool isEnable)
+    + void disableAll()
+    + bool isWriting()
+    + bool isReading()
+    + void setReadCallback(Callback cb)
+    + void setWriteCallback(Callback cb)
+    + void setErrorCallback(Callback cb)
+    + void setCloseCallback(Callback cb)
+    - void update()
+}
+
+EventLoop --> Event : manages
+}
+@enduml
