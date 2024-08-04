@@ -36,9 +36,11 @@ public:
 
     void run();
     void stop();
+
     void runInLoop(const Callback callback);
     void runOnceAfter(const Callback callback, uint32_t interval);
     void runEveryInterval(const Callback callback,uint32_t interval);
+
     void postCallback(const Callback& callback);
     void postCallback(Callback&& callback);
 private:

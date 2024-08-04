@@ -40,10 +40,12 @@ void TcpServer::newConnected(int sockfd, const SocketAddr& addr)
 
     addConnect(addr.toString(), tcpConnect);
 
+    //messageCallback 由用户自己实现
     tcpConnect->setMessageCallback(std::bind(&TcpServer::messageCallback, this, std::placeholders::_1, std::placeholders::_2));
     tcpConnect->setCloseCallback(std::bind(&TcpServer::connectCloseEvent,this,std::placeholders::_1));
     tcpConnect->connectedHandle();
 
+    //调用connectCallback,由使用框架用户自己实现 void TestTcpServer::connectCallback(std::shared_ptr<TcpConnect> tcpConnect)
     connectCallback(tcpConnect);
 
 }
@@ -103,6 +105,7 @@ void TcpServer::write(const std::string& name, const std::string& data)
 
 void TcpServer::connectCloseEvent(std::shared_ptr<TcpConnect> connect)
 {
+    //调用close callback
     connectCloseCallback(connect);
     removeConnect(connect->getName());
 }

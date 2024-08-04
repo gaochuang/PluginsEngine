@@ -65,7 +65,7 @@ void EventCtrl::deleteEvent(int fd)
     if (eventPool.find(fd) != eventPool.end())
     {
         /*
-        之前出现先close,后从epoll中移除问题
+        出现先close,后从epoll中移除问题
         */
         epoll.removeEvent(fd);
         eventPool.erase(fd);

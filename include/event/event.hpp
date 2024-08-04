@@ -39,7 +39,7 @@ public:
 
     void enableReading(bool isEnable);
     void enableWriting(bool isEnable) ;
-    void enableErrorEvent(bool isEnable) ;
+    void enableErrorEvent(bool isEnable);
     void disableAll();
     bool isWriting();
     bool isReading();

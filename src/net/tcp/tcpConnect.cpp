@@ -61,6 +61,7 @@ void TcpConnect::readEvent()
     auto n = readBuf.readFromIO(event->getFd(), error);
     if (n > 0)
     {
+        //调用用户自己实现的callback
         if(messageCallback)
         {
             messageCallback(shared_from_this(),readBuf);

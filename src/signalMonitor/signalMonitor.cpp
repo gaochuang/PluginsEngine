@@ -28,6 +28,7 @@ SignalMonitor::~SignalMonitor()
 
 int SignalMonitor::createSignalFd()
 {
+    //清空信号集
     ::sigemptyset(&mask);
     const int ret(::signalfd(-1, &mask, SFD_NONBLOCK | SFD_CLOEXEC));
     if (ret == -1)
@@ -54,6 +55,7 @@ void SignalMonitor::del(int signal)
     map.erase(it);
     sigdelset(&mask, signal);
     ::signalfd(signalFd, &mask, 0);
+    //删除这个序号
     unblock(signal);
 }
 
@@ -91,6 +93,7 @@ void SignalMonitor::addImpl(int signal, SignalHandler sh)
         return;
     }
 
+   //设置进程屏蔽字，让signalfd接管这个信号
     block(signal);
     ::sigaddset(&mask, signal);
     ::signalfd(signalFd, &mask, 0);
@@ -102,6 +105,7 @@ void SignalMonitor::handleSignal()
 {
     signalfd_siginfo si;
     ::read(signalFd, &si, sizeof(si));
+    //获取这个信号
     const auto it  = map.find(si.ssi_signo);
     if (it != map.end())
     {
