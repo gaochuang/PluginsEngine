@@ -10,19 +10,20 @@ Timer::Timer(uint32_t interval, const TimerCallBack& callback): intervalMs(inter
     update();
 }
 
-struct timeval Timer::getTimeout()
+struct timespec Timer::getTimeout()
 {
-    struct timeval timeout = now;
+    struct timespec timeout = now;
 
-    //bug:  ms->s   intervalMs / 1000; * 1000; not  intervalMs / 1000;
-    timeout.tv_usec += (intervalMs % 1000) * 1000; //不足1秒部分，按照毫秒计算1500ms = 1s + 500ms ->  500ms 转成微秒
-    timeout.tv_sec += intervalMs / 1000;
 
-    //确保微秒部分不超过1000000（即一秒）
-    if (timeout.tv_usec >= 1000000)
+    // 加上时间间隔
+    timeout.tv_nsec += (intervalMs % 1000) * 1000000; // 毫秒部分转为纳秒
+    timeout.tv_sec += intervalMs / 1000;  // 秒部分
+
+    // 确保纳秒部分不超过1000000000（即一秒）
+    if (timeout.tv_nsec >= 1000000000)
     {
-        timeout.tv_sec += timeout.tv_usec / 1000000;
-        timeout.tv_usec %= 1000000;
+        timeout.tv_sec += timeout.tv_nsec / 1000000000;
+        timeout.tv_nsec %= 1000000000;
     }
 
     return timeout;
@@ -30,19 +31,19 @@ struct timeval Timer::getTimeout()
 
 uint64_t Timer::getTimeOutMSecond()
 {
-    struct timeval timeout = getTimeout();
-    auto mSecond = timeout.tv_sec * 1000 + timeout.tv_usec / 1000;
+    struct timespec timeout = getTimeout();
+    
+    auto mSecond = timeout.tv_sec * 1000 + timeout.tv_nsec / 1000000;
 
     return mSecond;
 }
 
 uint64_t Timer::getNowTimeMSecond()
 {
-    struct timeval nowDate = {};
+    struct timespec nowDate = {};
+    clock_gettime(CLOCK_MONOTONIC, &nowDate);
 
-    ::gettimeofday(&nowDate, nullptr);
-
-    auto ms = nowDate.tv_sec * 1000 + nowDate.tv_usec / 1000;
+    auto ms = nowDate.tv_sec * 1000 + nowDate.tv_nsec / 1000000;
 
     return ms;
 }
@@ -78,7 +79,7 @@ struct timespec Timer::getTimeInterval()
 
 void Timer::update()
 {
-    ::gettimeofday(&now, nullptr);
+    ::clock_gettime(CLOCK_MONOTONIC, &now);
 }
 
 void Timer::setHandle(const TimerCallBack& cb)
