@@ -21,7 +21,7 @@ public:
     Timer(const Timer&&) = delete;
     Timer& operator=(const Timer&&) = delete;
 
-    struct timeval getTimeout();
+    struct timespec getTimeout();
     uint64_t getTimeOutMSecond();
     struct timespec getTimeInterval();
     static uint64_t getNowTimeMSecond();
@@ -34,7 +34,8 @@ public:
 
 private:
    uint32_t intervalMs;
-   struct timeval now;
+
+   struct timespec now;
    TimerCallBack callback;
 };
 
