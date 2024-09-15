@@ -28,7 +28,6 @@ TcpConnect::TcpConnect(EventLoop* loop, struct sockaddr_in addr, int fd):loop(lo
 
 }
 
-
 TcpConnect::~TcpConnect()
 {
     event->disableAll();
@@ -64,46 +63,68 @@ void TcpConnect::readEvent()
         //调用用户自己实现的callback
         if(messageCallback)
         {
-            messageCallback(shared_from_this(),readBuf);
+            messageCallback(shared_from_this(), readBuf);
         }
     }else if(n == 0)
     {
+
+        std::cout << "will call closeEvent" << std::endl;
         closeEvent();
     }else
     {
+        //但是buffer没有数据
+        if(errno == EWOULDBLOCK)
+        {
+            return;
+        }
         std::cerr << "TcpConnection::handleRead error :" << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
         closeEvent();
     }
 }
 
+
 void TcpConnect::writeEvent()
 {
     if (event->isWriting())
     {
-        auto n = SocketOperation::write(event->getFd(), writeBuf.readIndexPtr(), writeBuf.readableBytes());
-        if(n > 0)
+        std::cerr << "connect failed, socket fd " << std::to_string(event->getFd()) << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
+        return;
+    }
+
+    auto n = SocketOperation::write(event->getFd(), writeBuf.readIndexPtr(), writeBuf.readableBytes());
+    if(n > 0)
+    {
+        writeBuf.clearReadIndex(n);
+        if(writeBuf.isEmpty())
         {
-            writeBuf.clearReadIndex(n);
-            if(writeBuf.isEmpty())
-            {
-                event->enableWriting(false);
-                if(writeCompleteCallback)
-                {
-                    writeCompleteCallback(shared_from_this()); 
-                }
-            }
-        }else
-        {
-            std::cerr << "write data error" << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
+            event->enableWriting(false);
+            if(writeCompleteCallback)
+                
+                writeCompleteCallback(shared_from_this()); 
         }
+ 
     }else
     {
-        std::cerr << "connect failed, socket fd " << std::to_string(event->getFd()) << ". Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
+        //这里应该是写错误，处理写错误
+        if(errno == EWOULDBLOCK )
+        {
+            return;
+        }
+
+        std::cerr << "Write data error. Error code: " << errno << " (" << std::strerror(errno) << ")" << std::endl;
+        // 处理其他写错误，关闭连接
+
+        std::cout << "will call closeEvent" << std::endl;
+        closeEvent();
     }
 }
 
 void TcpConnect::closeEvent()
 {
+    if(state == Disconnected)
+    {
+        return;
+    }
     state = Disconnected;
     if(closeCallback)
     {
@@ -135,6 +156,7 @@ void TcpConnect::connectedHandle()
 
 void TcpConnect::errorEvent()
 {
+    std::cout <<"### will call closeEvent" << std::endl;
     closeEvent();
 }
 
@@ -152,7 +174,7 @@ void TcpConnect::write(const void* data, uint32_t length)
 {
     int n(0);
     size_t remaining(length);
-     bool faultError(false);
+    bool faultError(false);
 
     if(Disconnected == state)
     {
@@ -213,5 +235,5 @@ void TcpConnect::shutdownWrite()
     }
 }
 
-
 }
+

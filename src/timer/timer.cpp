@@ -14,7 +14,6 @@ struct timespec Timer::getTimeout()
 {
     struct timespec timeout = now;
 
-
     // 加上时间间隔
     timeout.tv_nsec += (intervalMs % 1000) * 1000000; // 毫秒部分转为纳秒
     timeout.tv_sec += intervalMs / 1000;  // 秒部分
@@ -32,7 +31,6 @@ struct timespec Timer::getTimeout()
 uint64_t Timer::getTimeOutMSecond()
 {
     struct timespec timeout = getTimeout();
-    
     auto mSecond = timeout.tv_sec * 1000 + timeout.tv_nsec / 1000000;
 
     return mSecond;

@@ -3,6 +3,7 @@
 
 #include "event.hpp"
 #include "timer.hpp"
+#include "timerService.hpp"
 
 #include <memory>
 #include <map>
@@ -13,7 +14,7 @@ namespace reactorFramework
 
 class EventLoop;
 
-class TimerQueue
+class TimerQueue : public TimerService
 {
 public:
     TimerQueue(EventLoop* eventLoop);
@@ -29,7 +30,7 @@ public:
     void addRecurringTimer(const Callback& handler, uint32_t interval);
     void runEveryInterval(const Callback& handler, int interval);
 
-public:
+private:
    EventLoop* loop;
    int timerFd;
    std::shared_ptr<Event> event;

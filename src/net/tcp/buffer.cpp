@@ -14,6 +14,7 @@ Buffer::Buffer(uint32_t size):readIndex(0),writeIndex(0),buffer(size)
 
 }
 
+//bufferPtr() 返回缓冲区的起始地址
 inline const uint8_t* Buffer::bufferPtr() const
 {
     return buffer.data();
@@ -51,10 +52,12 @@ readv函数读取数据到缓冲区和额外的栈缓冲区extrabuf
 */
 int Buffer::readFromIO(int fd, int& errorNo)
 {
+    //利用了临时栈上空间，避免开巨大 Buffer 造成的内存浪费，也避免反复调用 read() 的系统开销（通常一次 readv() 系统调用就能读完全部数据
     char extrabuf[65536];
 
     struct iovec vec[2];
 
+    //buffer.size() - writeIndex 还有多少可写空间
     auto writable = writableBytes();
 
     // vec[0] 指向缓冲区的可写部分
@@ -65,27 +68,27 @@ int Buffer::readFromIO(int fd, int& errorNo)
     vec[1].iov_base = extrabuf;
     vec[1].iov_len = sizeof(extrabuf);
 
-    // 如果可写空间不足以容纳所有数据，使用两个 iovec；否则只使用一个
+    // 当前可写空间小于 extrabuf 的大小时，需要读取到两个空间
     auto iovcnt = writable < sizeof(extrabuf) ? 2 : 1;
 
-    // 读取数据到缓冲区和额外缓冲区中
+    // 散布读，读取数据到缓冲区和额外缓冲区中
     auto n = SocketOperation::readv(fd, vec, iovcnt);
     if(n < 0)
     {
         errorNo = errno;
-    }else if(static_cast<uint32_t>(n) <= writable)
+    }else if(static_cast<uint32_t>(n) <= writable) //如果读取的字节数 n 小于或等于缓冲区的可写空间 writable
     {
         //如果读取的字节数 n 小于或等于缓冲区的可写空间 writable，所有数据都可以直接写入缓冲区
         writeIndex += n;
     }else
     {
         //读取的字节数 n 大于缓冲区的可写空间 writable，部分数据需要写入额外缓冲区 extrabuf
+    
         writeIndex = buffer.size();
        //将缓冲区的写入索引 writeIndex 设置为缓冲区的大小 buffer.size()，缓冲区已满，
        //将多余的数据（即 n - writable 字节）追加到缓冲区中。将 extrabuf 中的数据追加到缓冲区中
         append(extrabuf, n - writable);
     }
-
     return n;
 }
 
@@ -95,7 +98,7 @@ int Buffer::readFromIO(int fd, int& errorNo)
 void Buffer::append(const char* data, std::size_t len)
 {
     ensureWritableBytes(len);
-    std::copy(data, data+len, buffer.begin() + writeIndex);
+    std::copy(data, data + len, buffer.begin() + writeIndex);
     writeIndex += len;
 }
 
@@ -125,7 +128,7 @@ void Buffer::clearReadIndex(uint32_t len)
     if(len < readableBytes())
     {
         readIndex += len;
-    }else
+    }else 
     {
         resetIndex();
     }
@@ -144,6 +147,7 @@ int Buffer::readAsString(uint32_t len, std::string &readBuf)
         len = readable;
     }
 
+    //读取数据并转换为字符串：将缓冲区中的数据读取到 readBuf 中，并更新读索引
     readBuf.assign(reinterpret_cast<const char*>(readIndexPtr()), len);
     clearReadIndex(len);
     return len;
@@ -151,7 +155,7 @@ int Buffer::readAsString(uint32_t len, std::string &readBuf)
     
 int Buffer::readAllAsByte(std::vector<uint8_t>& data)
 {
-    return readBytes(data,readableBytes());
+    return readBytes(data, readableBytes());
 }
 
 int Buffer::readBytes(std::vector<uint8_t>& data, uint32_t len)
@@ -198,3 +202,4 @@ void Buffer::retrieveUntil(const char* end)
 }
 
 }
+    

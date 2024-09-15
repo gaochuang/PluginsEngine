@@ -11,7 +11,7 @@ LIBDIR = ../../
 LIBS = $(LIBDIR)/libractor.a
 
 
-INCLUDES = -I../../include/event -I../../include/signalMonitor -I../../include/timer
+INCLUDES = -I../../include/event -I../../include/signalMonitor -I../../include/timer -I../../include/plugin -I../../include/engine
 
 
 all: $(TARGET)

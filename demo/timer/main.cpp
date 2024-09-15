@@ -4,8 +4,10 @@
 #include <ctime>
 #include <iomanip>
 
-using namespace std;
+#include "engine.hpp"
+#include "genapi.hpp"
 
+using namespace std;
 using namespace reactorFramework;
 
 void logWithTimestamp(const std::string& message) {
@@ -26,46 +28,31 @@ void logWithTimestamp(const std::string& message) {
 class TimerTest
 {
 public:
-    static void callback1()
-    {
-        logWithTimestamp("callback 1 test");
-    }
-    static void callback2()
-    {
-        logWithTimestamp("callback 2 test");
-    }
-    static void callback3()
-    {
-        logWithTimestamp("callback 3 test");
-    }
-    static void callback4()
-    {
-        logWithTimestamp("callback 4 test");
-    }
-
-    static void runInLoop()
-    {
-        logWithTimestamp("run in loop");
-    }
+    static void callback1() { logWithTimestamp("callback 1 test"); }
+    static void callback2() { logWithTimestamp("callback 2 test"); }
+    static void callback3() { logWithTimestamp("callback 3 test"); }
+    static void callback4() { logWithTimestamp("callback 4 test"); }
+    static void runInLoop() { logWithTimestamp("run in loop"); }
 };
 
 int main()
 {
-    EventLoop loop;
+    Engine engine;
 
-    loop.runOnceAfter(std::bind(&TimerTest::callback1),1000);
+    // 添加一些单次定时器
+    for (int i = 0; i < 50000; ++i) {
+        // 延迟时间从 100ms 到 5000ms
+        int delay = (i % 50) * 100; 
+        engine.getTimerService().runEveryInterval(std::bind(&TimerTest::callback1), delay);
+    }
 
-    loop.runOnceAfter(std::bind(&TimerTest::callback2),3000);
+    // 添加一些周期性定时器
+    for (int i = 0; i < 5000; ++i) {
+        // 间隔时间从 100ms 到 5000ms
+        int interval = (i % 50 + 1) * 100; 
+        engine.getTimerService().runEveryInterval(std::bind(&TimerTest::callback2), interval);
+    }
 
-    loop.runEveryInterval(std::bind(&TimerTest::callback1), 1000);
-
-    loop.runEveryInterval(std::bind(&TimerTest::callback2), 2000);
-
-    loop.runEveryInterval(std::bind(&TimerTest::callback3), 3000);
-
-    loop.runInLoop(std::bind(&TimerTest::runInLoop));
-
-   
-
-    loop.run();
+    // 启动事件循环
+    engine.run();
 }

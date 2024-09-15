@@ -20,6 +20,8 @@ public:
     Epoll(const Epoll&&) = delete;
     Epoll& operator=(const Epoll&&) = delete;
 
+    int getEpollFd() const noexcept;
+
     bool addEvent(Event* Event) noexcept;
     bool removeEvent(Event* Event) noexcept;
     bool modifyEvent(Event* Event) noexcept;

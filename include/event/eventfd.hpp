@@ -4,6 +4,8 @@
 
 #include "eventLoop.hpp"
 #include "event.hpp"
+#include "callbackQueueService.hpp"
+
 #include "eventCallbackQueue.hpp"
 
 #include <sys/eventfd.h>
@@ -17,9 +19,8 @@ namespace reactorFramework
 {
 
  using Callback = std::function<void()>;
-class EventFD  : public eventCallbackQueue
+class EventFD : public CallbackQueueService  
 {
-        
 public:
         explicit EventFD(EventLoop* eventLoop);         
         ~EventFD() = default;

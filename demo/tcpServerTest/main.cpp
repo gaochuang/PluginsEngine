@@ -17,7 +17,7 @@ int main()
     TestTcpServer server(&loop, addr);
 
     //设置线程池大小
-    server.setThreadPoolSize(3);
+  //  server.setThreadPoolSize(3);
 
     //服务器开始运行
     server.start();

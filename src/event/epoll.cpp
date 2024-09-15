@@ -24,6 +24,11 @@ Epoll::~Epoll()
     }
 }
 
+int Epoll::getEpollFd() const noexcept
+{
+    return epollFd;
+}
+
 bool Epoll::epollCtrl(int operation, int fd, int events) noexcept
 {
     struct epoll_event event = {};
@@ -82,4 +87,3 @@ int Epoll::waitEvent(struct epoll_event* eventList, int eventSize, int timeout) 
 }
 
 }
-

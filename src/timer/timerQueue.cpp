@@ -11,10 +11,7 @@
 namespace reactorFramework
 {
 
-TimerQueue::TimerQueue(EventLoop* eventLoop) :
-                                        loop(eventLoop), timerFd(createTimerFd()),
-                                        event(new Event(loop, timerFd))
-                                         
+TimerQueue::TimerQueue(EventLoop* eventLoop) :loop(eventLoop), timerFd(createTimerFd()),event(new Event(loop, timerFd))
 {
     loop->addEvent(event);
     event->enableReading(true);
@@ -67,24 +64,25 @@ void TimerQueue::timerHandle()
 
     for(it = recurringTimers.begin(); it != recurringTimers.end();)
     {
+        //当前时间转成毫秒getNowTimeMSecond
         if (it->first > Timer::getNowTimeMSecond())
         {
             break;
         }
 
         it->second->timerHandle();
-
         std::shared_ptr<Timer> timer = it->second;
         timer->update();
 
-        recurringTimers.insert(std::pair<uint64_t, std::shared_ptr<Timer> >(timer->getTimeOutMSecond(),timer));
+        recurringTimers.insert(std::pair<uint64_t, std::shared_ptr<Timer> >(timer->getTimeOutMSecond(), timer));
 
         it = recurringTimers.erase(it);
 
     }
+
+    //重置定时器
     resetTimer();
 }
-
 
 bool TimerQueue::needResetTimer(std::multimap<uint64_t, std::shared_ptr<Timer>>& timers, std::shared_ptr<Timer> timer)
 {
@@ -111,7 +109,6 @@ bool TimerQueue::needResetTimer(std::multimap<uint64_t, std::shared_ptr<Timer>>&
 void TimerQueue::resetTimer(std::shared_ptr<Timer> timer)
 {
     struct itimerspec newValue = {};
-
     newValue.it_value  = timer->getTimeInterval(); //第一次设置后多久溢出
     auto ret = ::timerfd_settime(timerFd, 0, &newValue, nullptr);
     if (ret < 0)
@@ -123,7 +120,7 @@ void TimerQueue::resetTimer(std::shared_ptr<Timer> timer)
 
 void TimerQueue::resetTimer()
 {
-     // 如果单次计时器队列为空，检查重复计时器队列是否为空
+    // 如果单次计时器队列为空，检查重复计时器队列是否为空
     if(onceTimers.empty())
     {
         //选择最早的计时器并调用 resetTimer 函数重置它
@@ -159,7 +156,9 @@ void TimerQueue::resetTimer()
 void TimerQueue::addOnceTimer(const Callback& callback, uint32_t interval)
 {
     std::shared_ptr<Timer> timer (new Timer(interval, callback));
+
     onceTimers.insert(std::pair<uint64_t,std::shared_ptr<Timer> >(timer->getTimeOutMSecond(), timer));
+
     if(needResetTimer(onceTimers, timer) && needResetTimer(recurringTimers, timer))
     {
         resetTimer(timer);

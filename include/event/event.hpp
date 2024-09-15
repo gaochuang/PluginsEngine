@@ -8,7 +8,7 @@
 namespace reactorFramework
 {
 
-using Callback = std::function<void()>;
+using Callback = std::function<void()>; //函数包装器，函数对象
 
 class EventLoop;
 

@@ -43,6 +43,25 @@
         "utility": "cpp",
         "typeinfo": "cpp",
         "string": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "cmath": "cpp",
+        "deque": "cpp",
+        "numeric": "cpp",
+        "atomic": "cpp",
+        "map": "cpp",
+        "bit": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "string_view": "cpp",
+        "memory_resource": "cpp",
+        "cstddef": "cpp",
+        "list": "cpp",
+        "algorithm": "cpp",
+        "iterator": "cpp",
+        "random": "cpp",
+        "cinttypes": "cpp"
     }
 }
