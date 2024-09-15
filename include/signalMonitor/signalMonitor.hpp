@@ -4,13 +4,12 @@
 #include "eventLoop.hpp"
 #include <functional>
 #include <unordered_map>
+#include  "signalMonitorService.hpp"
 
 namespace reactorFramework
 {
 
-using SignalHandler = std::function<void()>;
-
-class SignalMonitor
+class SignalMonitor : public signalMonitorService
 {
 public:
     SignalMonitor(EventLoop* eventLoop);
@@ -21,8 +20,8 @@ public:
     SignalMonitor& operator=(const SignalMonitor&) = delete;
     SignalMonitor& operator=(SignalMonitor&&) = delete;
 
-    void add(int signal, const SignalHandler& sh);
-    void del(int signal);
+    void add(int signal, const SignalHandler& sh) override;
+    void del(int signal) override;
 
 private:
     EventLoop* loop;

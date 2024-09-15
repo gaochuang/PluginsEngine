@@ -10,9 +10,9 @@ namespace reactorFramework
 
 const int EventLoop::PollTimeMs = 3000;
 
-EventLoop::EventLoop() : running(true),eventCtrl(new EventCtrl(this)), 
-                         threadId(Thread::getThreadId()),
-                         timerQueue(new TimerQueue(this))
+EventLoop::EventLoop() : running(true), eventCtrl(new EventCtrl(this)), 
+                         threadId(Thread::getThreadId())
+
 {
 
 }
@@ -21,7 +21,6 @@ EventLoop::~EventLoop()
 {
 
 }
-
 
 void EventLoop::addFunInLoop(Callback callback)
 {
@@ -68,29 +67,14 @@ void EventLoop::modifyEvent(int fd)
     eventCtrl->modifyEvent(fd);
 }
 
+int EventLoop::getEpollFd() const noexcept
+{
+    return eventCtrl->getEpollFd();
+}
+
 void EventLoop::removeEvent(int fd)
 {
     eventCtrl->deleteEvent(fd);
-}
-
-eventCallbackQueue& EventLoop::getEventCallbackQueue()
-{
-    if(!callbackQueue)
-    {
-        callbackQueue = std::make_shared<EventFD>(this);
-    }
-
-    return *callbackQueue;
-}
-
-void EventLoop::postCallback(const Callback& callback)
-{
-    getEventCallbackQueue().post(callback);
-}
-
-void EventLoop::postCallback(Callback&& callback)
-{
-    getEventCallbackQueue().post(std::move(callback));
 }
 
 void EventLoop::run()
@@ -106,7 +90,11 @@ void EventLoop::run()
         eventCtrl->waitAndRunHandler(PollTimeMs);
         runAllFunctionInLoop();
     }
+}
 
+void EventLoop::handleEvent(int timeMs)
+{
+    eventCtrl->waitAndRunHandler(timeMs);
 }
 
 void EventLoop::stop()
@@ -123,19 +111,6 @@ void EventLoop::runInLoop(const Callback callback)
     {
         addFunInLoop(callback);
     }
-    
-}
-
-//只执行一次的定时任务
-void EventLoop::runOnceAfter(const Callback callback, uint32_t interval)
-{
-    timerQueue->runOnceAfter(callback, interval);
-}
-
-//循环执行定时任务
-void EventLoop::runEveryInterval(const Callback callback, uint32_t interval)
-{
-    timerQueue->runEveryInterval(callback, interval);
 }
 
 }

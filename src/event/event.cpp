@@ -1,7 +1,7 @@
 #include "event.hpp"
 #include "eventLoop.hpp"
 #include <iostream>
-
+#include <iomanip>
 namespace reactorFramework
 {
 
@@ -97,7 +97,6 @@ void Event::removeFromLoop()
 {
     loop->removeEvent(eventFd);
 }
-
 
 /*
 如果callback中关闭fd，需要提前从epoll中移除 fd 

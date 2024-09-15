@@ -21,6 +21,11 @@ EventCtrl::~EventCtrl()
     eventPool.clear();
 }
 
+int EventCtrl::getEpollFd() const noexcept
+{
+    return epoll.getEpollFd();
+}
+
 void EventCtrl::addEvent(std::shared_ptr<Event> event)
 {
     //添加到event注册表，再加入到epoll中

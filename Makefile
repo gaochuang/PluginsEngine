@@ -1,9 +1,9 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -pthread -O2 -fPIC -std=c++11
+CXXFLAGS = -Wall -Wextra -pthread -O2 -fPIC -std=c++17
 
 LIBNAME = ractor
 
-INCLUDES = -Iinclude/event -Iinclude/thread -Iinclude/timer -Iinclude/net/tcp -Iinclude/signalMonitor -Iinclude/net/http
+INCLUDES = -Iinclude/event -Iinclude/thread  -Iinclude/engine  -Iinclude/comApi -Iinclude/timer -Iinclude/net/tcp -Iinclude/signalMonitor -Iinclude/plugin -Iinclude/net/http
 
 SRCS = src/event/epoll.cpp \
        src/event/eventfd.cpp \
@@ -15,6 +15,11 @@ SRCS = src/event/epoll.cpp \
 	   src/thread/eventThread.cpp \
 	   src/timer/timer.cpp \
 	   src/timer/timerQueue.cpp \
+	   src/engine/engine.cpp \
+	   src/plugin/plugin.cpp \
+	   src/plugin/pluginCreator.cpp \
+	   src/plugin/pluginDataStorage.cpp \
+	   src/plugin/sharedLibrary.cpp \
 	   src/net/tcp/buffer.cpp \
 	   src/net/tcp/socketOperation.cpp \
 	   src/net/tcp/socketAddr.cpp \

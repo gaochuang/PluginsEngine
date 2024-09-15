@@ -30,7 +30,7 @@ void TcpServer::setThreadPoolSize(uint16_t num)
 void TcpServer::newConnected(int sockfd, const SocketAddr& addr)
 {
 
-    std::cout << "new tcp connect addr: " << addr.toString() << "count: " << std::to_string(getConnectCount()) <<std::endl;
+    std::cout << "new tcp connect addr: " << addr.toString() << " count: " << std::to_string(getConnectCount()) <<std::endl;
 
     //从线程池获取一个线程处理新的连接
     EventLoop* loop = threadPool->getOneLoopFromPool();

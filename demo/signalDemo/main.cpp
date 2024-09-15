@@ -1,8 +1,12 @@
 #include <iostream>
 #include <eventLoop.hpp>
 #include <functional>
-#include <signalMonitor.hpp>
+
 #include <signal.h>
+
+#include "engine.hpp"
+
+#include "signalMonitorService.hpp"
 
 using namespace std;
 
@@ -12,22 +16,22 @@ using namespace reactorFramework;
 
 int main()
 {
-    EventLoop loop;
+    Engine engine;
 
-    SignalMonitor sig(&loop);
+    signalMonitorService& signalMonitor = engine.getSignalMonitor();
 
     // 使用lambda捕获loop的引用，并传递给信号处理函数
-    sig.add(SIGABRT, [&loop]() {
+    signalMonitor.add(SIGABRT, [&engine]() {
         std::cout << "SIGABRT received" << std::endl;
-        loop.stop();
+        engine.stop();
     });
 
-    sig.add(SIGTERM, [&loop]() {
+    signalMonitor.add(SIGTERM, [&engine]() {
         std::cout << "SIGTERM received" << std::endl;
-        loop.stop();
+        engine.stop();
     });
 
-    loop.run();
+    engine.run();
 
     return 0;
 }

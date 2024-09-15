@@ -23,7 +23,7 @@ void HttpServer::connectCallback(std::shared_ptr<TcpConnect> tcpConnect)
 
 void HttpServer::messageCallback(std::shared_ptr<TcpConnect> tcpConnect, Buffer& buffer)
 {
-    HttpContext  context;
+    HttpContext context;
     if (!context.parseRequest(&buffer, Timer::getNowTimeDate()))
     {
         tcpConnect->write("HTTP/1.1 400 Bad Request\r\n\r\n");
@@ -46,8 +46,6 @@ void HttpServer::connectCloseCallback(std::shared_ptr<TcpConnect> connect)
 {
 
 }
-
-
 
 void HttpServer::httpCallback(const HttpRequest&, HttpResponse* resp)
 {

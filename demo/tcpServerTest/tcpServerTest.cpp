@@ -13,12 +13,15 @@ void TestTcpServer::connectCallback(std::shared_ptr<TcpConnect> tcpConnect)
 {
     cout<<"new connect:"<<tcpConnect->getAddr().toString() <<"<count>" <<getConnectCount()<<endl;
 }
+
 void TestTcpServer::messageCallback(std::shared_ptr<TcpConnect> tcpConnect, Buffer& buffer)
 {
     cout<<"thread id:"<<std::this_thread::get_id()<<endl;
     string addr = tcpConnect->getAddr().toString();
     string data;
+
     buffer.readAllAsString(data);
+
     cout<<"receive data form "<<addr<<":"<<data<<endl;
     tcpConnect->write(data);
 }

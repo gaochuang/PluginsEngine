@@ -108,26 +108,25 @@ std::string HttpRequest::getReveiveTimer() const
 
 void HttpRequest::addHeader(const char* start, const char* end, const char* colon)
 {
-    std::string field(start, colon);
+    if(nullptr == start || nullptr == end || nullptr == colon)
+    {
+        std::cout << "addHeader error" << std::endl;
+        return;
+    }
 
-    // 跳过冒号后的空白字符
+    std::string field(start, colon);
     ++colon;
     while (colon < end && isspace(*colon))
     {
         ++colon;
     }
-
-    // 提取字段值
+     
     std::string value(colon, end);
-
-    // 去除字段值末尾的空白字符
-    auto it = value.find_last_not_of(" \t\r\n");
-    if (it != std::string::npos) 
+    while (!value.empty() && isspace(value[value.size()-1]))
     {
-        value.erase(it + 1);
+        value.resize(value.size()-1);
     }
-
-    // 添加到头部集合
+    
     headers[field] = value;
 }
 

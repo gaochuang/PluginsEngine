@@ -27,6 +27,7 @@ public:
     EventCtrl(const EventCtrl&&) = delete;
     EventCtrl& operator=(const EventCtrl&&) = delete;
 
+    int getEpollFd() const noexcept;
     void addEvent(std::shared_ptr<Event> event);  
     void deleteEvent(std::shared_ptr<Event> event);
     void modifyEvent(std::shared_ptr<Event> event);

@@ -60,12 +60,14 @@ bool HttpContext::processRequestLine(const char* begin, const char* end)
 
 bool HttpContext::parseRequest(Buffer* buffer, std::string receiveTime)
 {
+
     bool ok = true;
     bool hasMore = true;
     while (hasMore)
     {
         if (state == HttpRequestParseState::ExpectRequestLine)
         {
+            std::cout << "ExpectRequestLine" << std::endl;
             const char* crlf = buffer->findCRLF();
             if (crlf)
             {
@@ -88,6 +90,7 @@ bool HttpContext::parseRequest(Buffer* buffer, std::string receiveTime)
         }
         else if (state == HttpRequestParseState::ExpectHeaders)
         {
+            std::cout << "ExpectHeaders" << std::endl;
             const char* crlf = buffer->findCRLF();
             if (crlf)
             {
