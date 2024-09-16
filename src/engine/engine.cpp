@@ -7,6 +7,16 @@
 
 using namespace reactorFramework;
 
+const unsigned int FdMonitor::EVENT_IN(EPOLLIN);
+const unsigned int FdMonitor::EVENT_OUT(EPOLLOUT);
+const unsigned int FdMonitor::EVENT_ERR(EPOLLERR);
+const unsigned int FdMonitor::EVENT_HUP(EPOLLHUP);
+
+const unsigned int ComAPIEventLoop::EVENT_IN(EPOLLIN);
+const unsigned int ComAPIEventLoop::EVENT_OUT(EPOLLOUT);
+const unsigned int ComAPIEventLoop::EVENT_ERR(EPOLLERR);
+const unsigned int ComAPIEventLoop::EVENT_HUP(EPOLLHUP);
+
 Engine::Engine(): loop(std::make_shared<EventLoop>())
 {
 
@@ -22,25 +32,25 @@ Engine::~Engine()
 
 }
 
-void Engine::addFd(int fd, unsigned int events, FdEventHandler handler)
+void Engine::addFd(int fd, unsigned int events, FdEventHandler& handler)
 {
     auto event = std::make_shared<Event>(loop.get(), fd);
     if (events == FdMonitor::EVENT_IN)
     {
-        event->enableReading(true);
         event->setReadCallback(handler);
+        event->enableReading(true);
     }
 
     if (events == FdMonitor::EVENT_OUT)
     {
-        event->enableWriting(true);
         event->setWriteCallback(handler);
+        event->enableWriting(true);
     }
 
     if (events == FdMonitor::EVENT_ERR)
     {
-        event->enableErrorEvent(true);
         event->setErrorCallback(handler);
+        event->enableErrorEvent(true);
     }
 
     loop->addEvent(event);
@@ -77,7 +87,7 @@ CallbackQueueService& Engine::getEventCallbackQueue()
 {
     if(!callbackQueue)
     {
-        callbackQueue = std::make_shared<EventFD>(loop.get());
+        callbackQueue = std::make_unique<EventFD>(loop.get());
     }
 
     return *callbackQueue;
@@ -87,7 +97,7 @@ TimerService& Engine::getTimerService()
 {
     if (!timerQueue)
     {
-        timerQueue = std::make_shared<TimerQueue>(loop.get());
+        timerQueue = std::make_unique<TimerQueue>(loop.get());
     }
 
     return *timerQueue;
@@ -107,7 +117,7 @@ signalMonitorService& Engine::getSignalMonitor()
 {
     if(!signalMonitor)
     {
-        signalMonitor = std::make_shared<SignalMonitor>(loop.get());
+        signalMonitor = std::make_unique<SignalMonitor>(loop.get());
     }
 
     return *signalMonitor;

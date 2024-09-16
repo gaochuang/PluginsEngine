@@ -4,9 +4,7 @@
 namespace reactorFramework
 {
 
-const int EventCtrl::activeEventLength = 20;
-
-EventCtrl::EventCtrl(EventLoop* el) : eventLoop(el), activeEvents(activeEventLength)
+EventCtrl::EventCtrl(EventLoop* el) : eventLoop(el)
 {
 
 }
@@ -82,12 +80,14 @@ void EventCtrl::deleteEvent(int fd)
 */
 void EventCtrl::waitAndRunHandler(int timeMs)
 {
-    auto num = epoll.waitEvent(&*activeEvents.begin(),activeEvents.size(),timeMs);
+    activeEvents.resize(eventPool.size());
+    const auto num = epoll.waitEvent(activeEvents.data(), static_cast<int>(activeEvents.size()), timeMs);
     if (num < 0)
     {
         return;
     }
 
+    activeEvents.resize(num);
     for(const auto& event : activeEvents)
     {
         auto fd = event.data.fd;

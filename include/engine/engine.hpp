@@ -31,7 +31,7 @@ public:
     ~Engine();
 
 
-    void addFd(int fd, unsigned int events, FdEventHandler handler) override;
+    void addFd(int fd, unsigned int events, FdEventHandler& handler) override;
     void removeFd(int fd) override;
     void modifyFd(int fd, unsigned int events) override;
 
@@ -63,7 +63,6 @@ public:
     void save(Key key, Data data) override;
     Data get(Key key) const override;
     void remove(Key key) override;
-    
 
 private:
     Callbacks callbacks;
@@ -73,10 +72,10 @@ private:
     SharedLibraryMap sharedLibraryMap;
 
     std::map<Key, Data> pluginDataMap;
-    std::shared_ptr<TimerQueue> timerQueue;
+    std::unique_ptr<TimerQueue> timerQueue;
     std::shared_ptr<EventLoop> loop;
-    std::shared_ptr<CallbackQueueService> callbackQueue;
-    std::shared_ptr<signalMonitorService> signalMonitor;
+    std::unique_ptr<CallbackQueueService> callbackQueue;
+    std::unique_ptr<signalMonitorService> signalMonitor;
 };
 
 }
