@@ -14,8 +14,8 @@ namespace reactorFramework
 TimerQueue::TimerQueue(EventLoop* eventLoop) :loop(eventLoop), timerFd(createTimerFd()),event(new Event(loop, timerFd))
 {
     loop->addEvent(event);
-    event->enableReading(true);
     event->setReadCallback(std::bind(&TimerQueue::timerHandle, this));
+    event->enableReading(true);
 }
 
 TimerQueue::~TimerQueue()

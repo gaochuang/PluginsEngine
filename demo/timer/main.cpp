@@ -5,7 +5,6 @@
 #include <iomanip>
 
 #include "engine.hpp"
-#include "genapi.hpp"
 
 using namespace std;
 using namespace reactorFramework;
@@ -38,6 +37,7 @@ public:
 int main()
 {
     Engine engine;
+    
 
     // 添加一些单次定时器
     for (int i = 0; i < 50000; ++i) {

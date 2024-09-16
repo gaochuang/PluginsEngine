@@ -7,27 +7,26 @@
 #include "engine.hpp"
 #include "callbackQueueService.hpp"
 #include "fdMonitor.hpp"
+#include "comApi.hpp"
 
 using namespace std;
 using namespace reactorFramework;
 
-void postCallbackEverySecond(CallbackQueueService& service) {
-    while (true) {
-        service.post([]() {
-            cout << "postCallback" << endl;
-        });
-        this_thread::sleep_for(chrono::seconds(1));
-    }
-}
 
 int main() {
+    
+    auto api = ComAPI::create();
 
-    Engine engine;
+    api->postCallback(
+        [](){
+            cout << "postCallback" << endl;
+        }
+    );
 
-    std::thread workerThread(postCallbackEverySecond, std::ref(engine.getEventCallbackQueue()));
-    workerThread.detach();
-
-    engine.run();
+    while(1)
+    {
+        api->waitAndHandleEvents();
+    }
 
     return 0;
 }
