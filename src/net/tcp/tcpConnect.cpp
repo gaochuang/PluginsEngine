@@ -156,7 +156,6 @@ void TcpConnect::connectedHandle()
 
 void TcpConnect::errorEvent()
 {
-    std::cout <<"### will call closeEvent" << std::endl;
     closeEvent();
 }
 

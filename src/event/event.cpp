@@ -44,7 +44,7 @@ void Event::enableErrorEvent(bool isEnable)
 
 void Event::disableAll()
 {
-    events =  noneEventFlag;
+    events = noneEventFlag;
     update();
 }
 

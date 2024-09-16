@@ -14,8 +14,8 @@ namespace reactorFramework
 SignalMonitor::SignalMonitor(EventLoop* eventLoop):loop(eventLoop),signalFd(createSignalFd()),event(new Event(loop, signalFd))
 {
     loop->addEvent(event);
-    event->enableReading(true);
     event->setReadCallback(std::bind(&SignalMonitor::handleSignal, this));
+    event->enableReading(true);
 }
 
 SignalMonitor::~SignalMonitor()

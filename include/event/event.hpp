@@ -49,7 +49,6 @@ public:
     void setErrorCallback(Callback cb);
     void setCloseCallback(Callback cb);
 
-
 private:
     EventLoop* loop;
     int eventFd;
