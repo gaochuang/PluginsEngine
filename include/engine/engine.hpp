@@ -32,6 +32,7 @@ public:
 
 
     void addFd(int fd, unsigned int events, FdEventHandler& handler) override;
+    void addFd(int fd, unsigned int events, FdEventHandler&& handler) override;
     void removeFd(int fd) override;
     void modifyFd(int fd, unsigned int events) override;
 
@@ -76,6 +77,7 @@ private:
     std::shared_ptr<EventLoop> loop;
     std::unique_ptr<CallbackQueueService> callbackQueue;
     std::unique_ptr<signalMonitorService> signalMonitor;
+
 };
 
 }

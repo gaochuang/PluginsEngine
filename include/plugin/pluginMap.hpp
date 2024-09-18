@@ -46,7 +46,6 @@ public:
             }
 
         }
-    
         pluginMap.insert(std::make_pair(key, newPlugin));
     }
 

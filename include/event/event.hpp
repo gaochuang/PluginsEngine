@@ -22,6 +22,8 @@ public:
     static constexpr int writeEventFlag = EPOLLOUT;
     static constexpr int errorEventFlag = EPOLLERR;
 
+    using EventHandler = std::function<void(unsigned int events)>;
+
     Event(EventLoop* loop, int fd);
     ~Event();
 
