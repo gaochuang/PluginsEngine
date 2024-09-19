@@ -76,6 +76,7 @@ private:
     std::shared_ptr<EventLoop> loop;
     std::unique_ptr<CallbackQueueService> callbackQueue;
     std::unique_ptr<signalMonitorService> signalMonitor;
+
 };
 
 }

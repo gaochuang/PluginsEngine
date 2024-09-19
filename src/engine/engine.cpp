@@ -32,6 +32,7 @@ Engine::~Engine()
 
 }
 
+
 void Engine::addFd(int fd, unsigned int events, FdEventHandler& handler)
 {
     auto event = std::make_shared<Event>(loop.get(), fd);
@@ -58,8 +59,7 @@ void Engine::addFd(int fd, unsigned int events, FdEventHandler& handler)
 
 void Engine::removeFd(int fd)
 {
-    auto event = std::make_shared<Event>(loop.get(), fd);
-    loop->removeEvent(event);
+    loop->removeEvent(fd);
 }
 
 void Engine::modifyFd(int fd, unsigned int events)
