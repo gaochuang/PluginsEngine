@@ -1,10 +1,10 @@
-#ifndef COMMON_API_CONTROLLABLE_PROCESS_HPP_
-#define COMMON_API_CONTROLLABLE_PROCESS_HPP_
+#ifndef COMMON_API_CONTROLLABLE_PROCESS_HPP
+#define COMMON_API_CONTROLLABLE_PROCESS_HPP
 
 #include <functional>
 #include <memory>
 
-#include "plugin.hpp"
+#include "plugin/plugin.hpp"
 
 namespace reactorFramework
 {
