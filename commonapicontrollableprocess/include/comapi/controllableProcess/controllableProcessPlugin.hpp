@@ -1,8 +1,7 @@
 #ifndef COMMON_API_CONTROLLABLE_PROCESS_PLUGIN_HPP
 #define COMMON_API_CONTROLLABLE_PROCESS_PLUGIN_HPP
 
-
-#include "defines.hpp"
+#include "plugin/defines.hpp"
 #include "controllableProcess.hpp"
 
 #define COMMONAPICONTROLLABLEPROCESS_PLUGIN_CREATOR_NAME  commonapi_controllable_process_create_plugin

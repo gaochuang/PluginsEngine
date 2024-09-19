@@ -1,11 +1,11 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -pthread -O2 -fPIC -std=c++17
 
-LIBNAME = libcommonpicontrollableprocess
+LIBNAME = libcommonpidaemon
 
-INCLUDES = -Iinclude/comapi/controllableProcess -I../include
+INCLUDES = -Iinclude/ -I../include/ -I../commonapicontrollableprocess/include
 
-SRCS = src/controllableProcess.cpp
+SRCS = src/Plugin.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
