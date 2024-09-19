@@ -32,7 +32,6 @@ public:
 
 
     void addFd(int fd, unsigned int events, FdEventHandler& handler) override;
-    void addFd(int fd, unsigned int events, FdEventHandler&& handler) override;
     void removeFd(int fd) override;
     void modifyFd(int fd, unsigned int events) override;
 

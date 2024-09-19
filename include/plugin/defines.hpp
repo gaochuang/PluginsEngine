@@ -4,7 +4,7 @@
 #include <memory>
 #include <type_traits>
 
-namespace commonapi
+namespace reactorFramework
 {
     class Plugin;
     class PluginServices;
@@ -23,13 +23,14 @@ namespace commonapi
 #define COMMONAPI_DECLARE_PLUGIN_CREATOR(_plugintype, _funcname, _services)        \
     static_assert(std::is_base_of<::reactorFramework::Plugin, _plugintype>::value);       \
     static_assert(std::is_convertible<_plugintype*, ::reactorFramework::Plugin*>::value); \
-    COMMONAPI_NO_NAME_MANGLING(::std::shared_ptr<::reactorFramework::Plugin> _funcname(::std::shared_ptr<::reactorFramework::PluginServices> _services, const void*))
+    COMMON_API_NO_NAME_MANGLING(::std::shared_ptr<::reactorFramework::Plugin> _funcname(::std::shared_ptr<::reactorFramework::PluginServices> _services, const void*))
 
-#define COMMONAPI_DECLARE_PLUGIN_CREATOR_WITH_ARGS(_plugintype, _funcname, _services, ...)                                                         \
-    static_assert(std::is_base_of<::reactorFramework::Plugin, _plugintype>::value);                                                                       \
-    static_assert(std::is_convertible<_plugintype*, ::reactorFramework::Plugin*>::value);                                                                 \
-    COMMONAPI_NO_NAME_MANGLING(::std::shared_ptr<::reactorFramework::Plugin> _funcname(::std::shared_ptr<::reactorFramework::PluginServices> _services, const void*)); \
-    COMMONAPI_NO_NAME_MANGLING(::std::shared_ptr<::reactorFramework::Plugin> COMMONAPI_MAKE_CREATOR_IMPL_NAME(_funcname)(::std::shared_ptr<::reactorFramework::PluginServices> _services, __VA_ARGS__))
+
+#define COMMONAPI_DECLARE_PLUGIN_CREATOR_WITH_ARGS(_plugintype, _funcname, _services, ...)\
+    static_assert(std::is_base_of<::reactorFramework::Plugin, _plugintype>::value);\
+    static_assert(std::is_convertible<_plugintype*, ::reactorFramework::Plugin*>::value); \
+    COMMON_API_NO_NAME_MANGLING(::std::shared_ptr<::reactorFramework::Plugin> _funcname(::std::shared_ptr<::reactorFramework::PluginServices> _services, const void*)); \
+    COMMON_API_NO_NAME_MANGLING(::std::shared_ptr<::reactorFramework::Plugin> COMMONAPI_MAKE_CREATOR_IMPL_NAME(_funcname)(::std::shared_ptr<::reactorFramework::PluginServices> _services, __VA_ARGS__))
 
 #define COMMONAPI_DEFINE_PLUGIN_CREATOR(_plugintype, _funcname, _services) \
     ::std::shared_ptr<::reactorFramework::Plugin> _funcname(::std::shared_ptr<::reactorFramework::PluginServices> _services, const void*)
