@@ -2,7 +2,9 @@
 
 #include "plugin/callbackQueueService.hpp"
 #include "plugin/fdMonitor.hpp"
+#include "plugin/defines.hpp"
 #include "plugin/signalMonitorService.hpp"
+#include "comapi/controllableProcess/controllableProcessPlugin.hpp"
 
 #include <csignal>
 #include <cstdlib>
@@ -69,7 +71,6 @@ void Plugin::setTerminateCb(const TerminateCb& cb)
     );
 }
 
-
 void Plugin::handleSigTerm()
 {
     if (signalState != SignalState::NONE)
@@ -91,4 +92,10 @@ void Plugin::callTerminateCb()
 
     signalState = SignalState::SIGNAL_HANDLED;
     terminateCb();
+}
+
+COMMONAPI_DEFINE_CONTROLLABLEPROCESS_PLUGIN_CREATOR(services)
+{
+    std::cout << "create controllable Plugin" << std::endl;
+    return std::make_shared<Plugin>(services);
 }
