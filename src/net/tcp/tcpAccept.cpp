@@ -1,8 +1,9 @@
-#include "tcpAccept.hpp"
-#include "socketOperation.hpp"
+#include "net/tcp/tcpAccept.hpp"
+#include "net/tcp/socketOperation.hpp"
+
 #include <memory>
 #include <iostream>
-namespace reactorFramework
+namespace commonApi
 {
 
 TcpAccept::TcpAccept(EventLoop* loop, SocketAddr addr):eventLoop(loop),

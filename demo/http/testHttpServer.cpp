@@ -1,6 +1,6 @@
 #include "testHttpServer.hpp"
 
-using namespace reactorFramework;
+using namespace commonApi;
 
 TestHttpServer::TestHttpServer(EventLoop* loop, SocketAddr& addr):HttpServer(loop,addr)
 {

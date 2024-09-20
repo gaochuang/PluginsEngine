@@ -1,6 +1,6 @@
-#include "httpRequest.hpp"
+#include "net/http/httpRequest.hpp"
 
-namespace reactorFramework
+namespace commonApi
 {
 
 const std::unordered_map<std::string, HttpRequest::Method> HttpRequest::methodMap = {

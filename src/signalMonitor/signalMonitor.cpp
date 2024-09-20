@@ -1,4 +1,4 @@
-#include "signalMonitor.hpp"
+#include "signalMonitor/signalMonitor.hpp"
 
 #include <sys/signalfd.h>
 #include <signal.h>
@@ -8,7 +8,7 @@
 #include <stddef.h>
 #include <sys/types.h>
 
-namespace reactorFramework
+namespace commonApi
 {
 
 SignalMonitor::SignalMonitor(EventLoop* eventLoop):loop(eventLoop),signalFd(createSignalFd()),event(new Event(loop, signalFd))

@@ -1,5 +1,5 @@
-#include "tcpConnect.hpp"
-#include "socketOperation.hpp"
+#include "net/tcp/tcpConnect.hpp"
+#include "net/tcp/socketOperation.hpp"
 
 #include <memory>
 #include <unistd.h>
@@ -7,7 +7,7 @@
 #include <cstring>
 #include <iostream>
 
-namespace reactorFramework
+namespace commonApi
 {
 
 

@@ -1,10 +1,10 @@
-#include "httpContext.hpp"
-#include "buffer.hpp"
+#include "net/http/httpContext.hpp"
+#include "net/tcp/buffer.hpp"
 
 #include <iostream>
 #include <algorithm>
 
-namespace reactorFramework
+namespace commonApi
 {
 
 HttpContext::HttpContext():state(HttpRequestParseState::ExpectRequestLine)

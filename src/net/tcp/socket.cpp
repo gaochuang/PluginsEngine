@@ -1,7 +1,8 @@
-#include "socket.hpp"
-#include "socketOperation.hpp"
+#include "net/tcp/socket.hpp"
+#include "net/tcp/socketOperation.hpp"
+
 #include <iostream>
-namespace reactorFramework
+namespace commonApi
 {
 
 Socket::Socket(int fd):socketFd(fd)

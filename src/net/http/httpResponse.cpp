@@ -1,6 +1,6 @@
-#include "httpResponse.hpp"
+#include "net/http/httpResponse.hpp"
 
-namespace reactorFramework
+namespace commonApi
 {
 
 HttpResponse::HttpResponse(bool close):statusCode(HttpStatusCode::Unknown),closeConnection(close)

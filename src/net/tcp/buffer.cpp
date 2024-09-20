@@ -1,12 +1,12 @@
-#include "buffer.hpp"
-#include "socketOperation.hpp"
+#include "net/tcp/buffer.hpp"
+#include "net/tcp/socketOperation.hpp"
 
 #include <errno.h>
 #include <sys/uio.h>
 #include <algorithm>
 #include <iostream>
 
-namespace reactorFramework
+namespace commonApi
 {
 
 Buffer::Buffer(uint32_t size):readIndex(0),writeIndex(0),buffer(size)

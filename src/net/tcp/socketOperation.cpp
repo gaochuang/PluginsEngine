@@ -1,4 +1,4 @@
-#include "socketOperation.hpp"
+#include "net/tcp/socketOperation.hpp"
 
 #include <iostream>
 #include <unistd.h>
@@ -11,7 +11,7 @@
 #include <sstream>
 #include <sys/uio.h>
 
-namespace reactorFramework
+namespace commonApi
 {
 
 const int32_t SocketOperation::Ipv4AddrAny = htonl(INADDR_ANY);

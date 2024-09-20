@@ -3,7 +3,7 @@ CXXFLAGS = -Wall -Wextra -pthread -O2 -fPIC -std=c++17
 
 LIBNAME = commapiengine
 
-INCLUDES = -Iinclude/event -Iinclude/thread  -Iinclude/engine  -Iinclude/comApi -Iinclude/timer -Iinclude/net/tcp -Iinclude/signalMonitor -Iinclude/plugin -Iinclude/net/http
+INCLUDES = -Iinclude/private -Iinclude/comapi
 
 SRCS = src/event/epoll.cpp \
        src/event/eventfd.cpp \

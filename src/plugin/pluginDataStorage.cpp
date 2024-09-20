@@ -1,8 +1,8 @@
-#include "pluginDataStorage.hpp"
+#include "plugin/PluginDataStorage.hpp"
 
 #include <atomic>
 
-using namespace reactorFramework;
+using namespace commonApi;
 
 PluginDataStorage::Key PluginDataStorage::getUniqueKey()
 {

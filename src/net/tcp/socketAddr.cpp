@@ -1,8 +1,8 @@
-#include "socketAddr.hpp"
-#include "socketOperation.hpp"
+#include "net/tcp/socketAddr.hpp"
+#include "net/tcp/socketOperation.hpp"
 
 #include <iostream>
-namespace reactorFramework
+namespace commonApi
 {
 
 SocketAddr::SocketAddr():valid(false)

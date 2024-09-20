@@ -1,6 +1,6 @@
-#include "eventThread.hpp"
+#include "thread/eventThread.hpp"
 
-namespace reactorFramework
+namespace commonApi
 {
 
 EventLoopThread::EventLoopThread(): loop(nullptr)

@@ -1,7 +1,7 @@
-#include "sharedLibrary.hpp"
+#include "engine/sharedLibrary.hpp"
 #include <dlfcn.h>
 
-namespace reactorFramework
+namespace commonApi
 {
 
 std::string getLastError()
@@ -42,4 +42,4 @@ void* SharedLibrary::dlsym(const std::string& symbolName)
     return ret;
 }
 
-} // namespace reactorFramework
+} // namespace commonApi

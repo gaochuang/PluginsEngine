@@ -1,11 +1,10 @@
+#include "engine/engine.hpp"
+#include "event/eventfd.hpp"
+#include "plugin/FdMonitor.hpp"
 
 #include <memory>
 
-#include "engine.hpp"
-#include "eventfd.hpp"
-#include "fdMonitor.hpp"
-
-using namespace reactorFramework;
+using namespace commonApi;
 
 const unsigned int FdMonitor::EVENT_IN(EPOLLIN);
 const unsigned int FdMonitor::EVENT_OUT(EPOLLOUT);
@@ -113,7 +112,7 @@ void Engine::stop()
     loop->stop();
 }
 
-signalMonitorService& Engine::getSignalMonitor()
+SignalMonitorService& Engine::getSignalMonitor()
 {
     if(!signalMonitor)
     {

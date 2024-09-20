@@ -1,6 +1,6 @@
-#include "thread.hpp"
+#include "thread/thread.hpp"
 
-namespace reactorFramework
+namespace commonApi
 {
 
 Thread::Thread():started(false),thread(new std::thread(&Thread::beginRun, this))

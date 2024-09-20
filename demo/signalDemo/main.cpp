@@ -10,7 +10,7 @@
 
 using namespace std;
 
-using namespace reactorFramework;
+using namespace commonApi;
 
 
 
@@ -19,7 +19,7 @@ int main()
     Engine engine;
     
 
-    signalMonitorService& signalMonitor = engine.getSignalMonitor();
+    SignalMonitorService& signalMonitor = engine.getSignalMonitor();
 
     // 使用lambda捕获loop的引用，并传递给信号处理函数
     signalMonitor.add(SIGABRT, [&engine]() {

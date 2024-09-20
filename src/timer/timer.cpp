@@ -1,8 +1,8 @@
-#include "timer.hpp"
-#include <sstream>
+#include "timer/timer.hpp"
 
+#include <sstream>
 #include <iostream>
-namespace reactorFramework
+namespace commonApi
 {
 
 Timer::Timer(uint32_t interval, const TimerCallBack& callback): intervalMs(interval), callback(callback)

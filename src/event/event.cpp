@@ -1,8 +1,9 @@
-#include "event.hpp"
-#include "eventLoop.hpp"
+#include "event/event.hpp"
+#include "event/eventLoop.hpp"
+
 #include <iostream>
 #include <iomanip>
-namespace reactorFramework
+namespace commonApi
 {
 
 Event::Event(EventLoop* loop, int fd) : loop(loop), eventFd(fd), events(0)

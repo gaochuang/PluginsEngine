@@ -1,9 +1,10 @@
-#include "httpContext.hpp"
-#include "httpContext.hpp"
-#include "httpServer.hpp"
-#include "iostream"
+#include "net/http/httpContext.hpp"
+#include "net/http/httpContext.hpp"
+#include "net/http/httpServer.hpp"
 
-namespace reactorFramework
+#include <iostream>
+
+namespace commonApi
 {
 
 HttpServer::HttpServer(EventLoop* loop,SocketAddr& addr):TcpServer(loop,addr)

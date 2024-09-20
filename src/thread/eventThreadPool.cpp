@@ -1,8 +1,8 @@
-#include "eventThreadPool.hpp"
+#include "thread/eventThreadPool.hpp"
 
 #include<iostream>
 
-namespace reactorFramework
+namespace commonApi
 {
   
 EventThreadPool::EventThreadPool(EventLoop* loop):mainLoop(loop),started(false),threadNum(0),threadIndex(0)

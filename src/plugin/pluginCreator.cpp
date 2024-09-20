@@ -1,5 +1,5 @@
-#include "pluginCreator.hpp"
-#include "engine.hpp" // Include the header file for the 'Engine' class
+#include "plugin/PluginCreator.hpp"
+#include "engine/engine.hpp" // Include the header file for the 'Engine' class
 
 #include <algorithm>
 #include <cerrno>
@@ -11,9 +11,9 @@
 #include <vector>
 #include <iostream>
 
-using namespace reactorFramework;
+using namespace commonApi;
 
-#define COMMONAPI  "/usr/lib/commonapi"
+#define COMMONAPI "/usr/lib/commonapi"
 
 namespace
 {

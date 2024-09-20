@@ -1,11 +1,11 @@
-#include "eventLoop.hpp"
-#include "thread.hpp"
-#include "eventCallbackQueue.hpp"
-#include "eventfd.hpp"
+#include "event/eventLoop.hpp"
+#include "thread/thread.hpp"
+#include "event/eventCallbackQueue.hpp"
+#include "event/eventfd.hpp"
 
 #include <iostream>
 
-namespace reactorFramework
+namespace commonApi
 {
 
 const int EventLoop::PollTimeMs = 3000;

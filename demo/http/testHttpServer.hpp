@@ -3,11 +3,11 @@
 
 #include "httpServer.hpp"
 
-class TestHttpServer : public reactorFramework::HttpServer
+class TestHttpServer : public commonApi::HttpServer
 {
 public:
-    TestHttpServer(reactorFramework::EventLoop* loop, reactorFramework::SocketAddr& addr);
-    virtual void httpCallback(const reactorFramework::HttpRequest&, reactorFramework::HttpResponse*);
+    TestHttpServer(commonApi::EventLoop* loop, commonApi::SocketAddr& addr);
+    virtual void httpCallback(const commonApi::HttpRequest&, commonApi::HttpResponse*);
 
 };
 

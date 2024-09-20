@@ -4,11 +4,11 @@
 #include <string>
 #include <vector>
 
-#include "plugin.hpp"
-#include "engine.hpp"
-#include "pluginCreator.hpp"
+#include "plugin/Plugin.hpp"
+#include "engine/engine.hpp"
+#include "plugin/PluginCreator.hpp"
 
-using namespace reactorFramework;
+using namespace commonApi;
 
 Plugin::Plugin()
 {
