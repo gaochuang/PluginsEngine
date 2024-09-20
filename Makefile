@@ -1,9 +1,11 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -pthread -O2 -fPIC -std=c++17
-
 LIBNAME = commapiengine
-
 INCLUDES = -Iinclude/private -Iinclude/comapi
+
+PREFIX ?= /usr/local
+LIBDIR = $(PREFIX)/lib64/comapi
+INCLUDEDIR = $(PREFIX)/include/comapi
 
 SRCS = src/event/epoll.cpp \
        src/event/eventfd.cpp \
@@ -46,6 +48,16 @@ $(SHARED_LIB): $(OBJS)
 src/%.o: src/%.cpp
 	@echo "Compiling $< into $@"
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+
+install: all
+	mkdir -p $(LIBDIR) $(INCLUDEDIR)
+	install -m 0755 $(SHARED_LIB) $(LIBDIR)
+	@echo "Installing header files to $(INCLUDEDIR)"
+	cp -r ./include/comapi/* $(INCLUDEDIR)
+
+uninstall:
+	rm -f $(LIBDIR)/$(SHARED_LIB)
+	rm -rf $(INCLUDEDIR)/*
 
 clean:
 	@echo "Cleaning up"

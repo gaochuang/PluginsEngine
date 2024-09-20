@@ -13,7 +13,7 @@
 
 using namespace commonApi;
 
-#define COMMONAPI "/usr/lib/commonapi"
+#define COMMON_API_PLUGINS "/usr/local/libexec/commonapi"
 
 namespace
 {
@@ -145,7 +145,7 @@ std::shared_ptr<Plugin> PluginCreator::create(const std::shared_ptr<Engine>& eng
         std::cout << "No plugins found" << "COMAPI_PLUGINS_PATH_VAR_NAME" << std::endl;
     }
 
-    auto ret = createFromDirectory(blacklist, COMMONAPI, engine, pluginTypeName, functionName, extraArgs);
+    auto ret = createFromDirectory(blacklist, COMMON_API_PLUGINS, engine, pluginTypeName, functionName, extraArgs);
     engine->updatePluginMap(key, ret);
 
     return ret;
