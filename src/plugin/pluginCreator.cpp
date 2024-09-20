@@ -13,16 +13,16 @@
 
 using namespace reactorFramework;
 
+#define COMMONAPI  "/usr/lib/commonapi"
+
 namespace
 {
 
 using Paths = std::vector<std::string>;
-
 Paths listDirectory(const std::string& path)
 {
     const int savedErrno(errno);
     Paths paths;
-
     try
     {
         for(auto const& it : std::filesystem::directory_iterator(path))
@@ -49,8 +49,6 @@ Paths listDirectory(const std::string& path)
     errno = savedErrno;
     return paths;
 }
-
-
 
 std::shared_ptr<SharedLibrary> getSharedLibrary(const std::string& path, Engine& engine)
 {
@@ -87,7 +85,7 @@ bool contains(const std::string& s, const std::vector<std::string>& v)
 
 //input "path1:path2::path3"
 //output {"path1", "path2", "path3"}
-std::vector<std::string> PluginCreator::colonSeparatedStringToPaths(const std::string& str)
+std::vector<std::string> PluginCreator:: colonSeparatedStringToPaths(const std::string& str)
 {
     std::vector<std::string> ret;
     auto previous = str.begin();
@@ -109,7 +107,7 @@ std::vector<std::string> PluginCreator::colonSeparatedStringToPaths(const std::s
         if (!candidate.empty())
             ret.push_back(candidate);
     }
-        
+
     return ret;
 }
 
@@ -142,12 +140,12 @@ std::shared_ptr<Plugin> PluginCreator::create(const std::shared_ptr<Engine>& eng
                 return plugin;
             }
         }
-    }
+    }else
     {
         std::cout << "No plugins found" << "COMAPI_PLUGINS_PATH_VAR_NAME" << std::endl;
     }
 
-    auto ret = createFromDirectory(blacklist, "COMAPI_PLUGIN_DIR", engine, pluginTypeName, functionName, extraArgs);
+    auto ret = createFromDirectory(blacklist, COMMONAPI, engine, pluginTypeName, functionName, extraArgs);
     engine->updatePluginMap(key, ret);
 
     return ret;
@@ -161,7 +159,6 @@ std::shared_ptr<Plugin> PluginCreator::createFromDirectory(const std::vector<std
                                                            const void* extraArgs)
 {
     const auto paths = listDirectory(path);
-
     for(auto const& it : paths)
     {
         if(auto plugin = createFromFile(blacklist, it, engine, functionName, extraArgs))

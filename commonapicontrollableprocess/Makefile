@@ -9,14 +9,9 @@ SRCS = src/controllableProcess.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
-STATIC_LIB = $(LIBNAME).a
 SHARED_LIB = $(LIBNAME).so
 
-all: $(STATIC_LIB) $(SHARED_LIB)
-
-$(STATIC_LIB): $(OBJS)
-	@echo "Creating static library $@"
-	ar rcs $@ $(OBJS)
+all: $(SHARED_LIB)
 
 $(SHARED_LIB): $(OBJS)
 	@echo "Creating shared library $@"
@@ -28,6 +23,6 @@ src/%.o: src/%.cpp
 
 clean:
 	@echo "Cleaning up"
-	rm -f $(OBJS) $(STATIC_LIB) $(SHARED_LIB)
+	rm -f $(OBJS) $(SHARED_LIB)
 
 .PHONY: all clean

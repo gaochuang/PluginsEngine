@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -pthread -O2 -fPIC -std=c++17
 
-LIBNAME = ractor
+LIBNAME = commapiengine
 
 INCLUDES = -Iinclude/event -Iinclude/thread  -Iinclude/engine  -Iinclude/comApi -Iinclude/timer -Iinclude/net/tcp -Iinclude/signalMonitor -Iinclude/plugin -Iinclude/net/http
 
@@ -35,14 +35,9 @@ SRCS = src/event/epoll.cpp \
 
 OBJS = $(SRCS:.cpp=.o)
 
-STATIC_LIB = lib$(LIBNAME).a
 SHARED_LIB = lib$(LIBNAME).so
 
-all: $(STATIC_LIB) $(SHARED_LIB)
-
-$(STATIC_LIB): $(OBJS)
-	@echo "Creating static library $@"
-	ar rcs $@ $(OBJS)
+all: $(SHARED_LIB)
 
 $(SHARED_LIB): $(OBJS)
 	@echo "Creating shared library $@"
@@ -54,6 +49,6 @@ src/%.o: src/%.cpp
 
 clean:
 	@echo "Cleaning up"
-	rm -f $(OBJS) $(STATIC_LIB) $(SHARED_LIB)
+	rm -f $(OBJS) $(SHARED_LIB)
 
 .PHONY: all clean

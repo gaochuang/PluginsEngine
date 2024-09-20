@@ -23,7 +23,7 @@ ControllableProcess::~ControllableProcess()
     }
 }
 
-std::shared_ptr<ControllableProcess> create(std::shared_ptr<reactorFramework::ComAPIEventLoop> ga)
+std::shared_ptr<ControllableProcess> ControllableProcess::create(std::shared_ptr<reactorFramework::ComAPIEventLoop> ga)
 {
     std::lock_guard<std::recursive_mutex> guard(mutex);
 
@@ -39,6 +39,4 @@ std::shared_ptr<ControllableProcess> create(std::shared_ptr<reactorFramework::Co
     createdInstance = ret.get();
 
     return ret;
-
 }
-
