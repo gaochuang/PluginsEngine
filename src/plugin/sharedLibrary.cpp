@@ -1,5 +1,6 @@
-#include "engine/sharedLibrary.hpp"
 #include <dlfcn.h>
+
+#include "engine/sharedLibrary.hpp"
 
 namespace commonApi
 {
@@ -15,9 +16,10 @@ std::string getLastError()
     return {};
 }
 
-SharedLibrary::SharedLibrary(const char* fileName):handle(::dlopen(fileName, RTLD_NOW | RTLD_LOCAL)), lastError(getLastError())
+SharedLibrary::SharedLibrary(const char* fileName)
 {
-
+    handle = ::dlopen(fileName, RTLD_NOW | RTLD_LOCAL);
+    lastError = getLastError();
 }
 
 SharedLibrary::~SharedLibrary() 

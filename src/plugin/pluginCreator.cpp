@@ -13,7 +13,7 @@
 
 using namespace commonApi;
 
-#define COMMON_API_PLUGINS "/usr/local/libexec/commonapi"
+#define COMMON_API_PLUGINS "/usr/local/libexec"
 
 namespace
 {
@@ -53,10 +53,9 @@ Paths listDirectory(const std::string& path)
 std::shared_ptr<SharedLibrary> getSharedLibrary(const std::string& path, Engine& engine)
 {
     auto sharedLibrary = engine.getSharedLibrary(path);
-    
     if (!sharedLibrary)
     {
-         sharedLibrary = std::make_shared<SharedLibrary>(path.c_str());
+        sharedLibrary = std::make_shared<SharedLibrary>(path.c_str());
     }
 
     return sharedLibrary;
@@ -66,7 +65,6 @@ void addToEngine(const std::string& path, Engine& engine, const std::shared_ptr<
 {
     engine.addSharedLibrary(path, sharedLibrary);
 }
-
 
 bool contains(const std::string& s, const std::vector<std::string>& v)
 {
@@ -128,6 +126,7 @@ std::shared_ptr<Plugin> PluginCreator::create(const std::shared_ptr<Engine>& eng
     {
         std::cout << "No blacklist found" << std::endl;
     }
+
     //可以通过环境遍历 COMAPI_PLUGINS_PATH_VAR_NAME 配置插件路径
     const char* pluginsEnv = ::getenv("COMAPI_PLUGINS_PATH_VAR_NAME");
     if (nullptr != pluginsEnv)
@@ -142,7 +141,7 @@ std::shared_ptr<Plugin> PluginCreator::create(const std::shared_ptr<Engine>& eng
         }
     }else
     {
-        std::cout << "No plugins found" << "COMAPI_PLUGINS_PATH_VAR_NAME" << std::endl;
+        std::cout << "No plugins found " << "COMAPI_PLUGINS_PATH_VAR_NAME" << std::endl;
     }
 
     auto ret = createFromDirectory(blacklist, COMMON_API_PLUGINS, engine, pluginTypeName, functionName, extraArgs);
@@ -169,7 +168,6 @@ std::shared_ptr<Plugin> PluginCreator::createFromDirectory(const std::vector<std
 
     std::ostringstream oss;
     oss << "No plugins found in " << path << pluginTypeName <<std::endl;
-
     throw oss.str();
 }
 
