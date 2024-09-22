@@ -178,6 +178,7 @@ bool Engine::waitAndHandleEvents(const std::chrono::steady_clock::duration& time
     return true;
 }
 
+
 std::shared_ptr<ComAPI> Engine::getComAPI()
 {
     return shared_from_this();

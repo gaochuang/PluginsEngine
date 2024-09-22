@@ -17,7 +17,6 @@ class TcpServer
 {
 public:
     explicit TcpServer(EventLoop* loop, SocketAddr& addr);
-
     TcpServer(const TcpServer&) = delete;
     TcpServer& operator=(const TcpServer&) = delete;
     TcpServer(const TcpServer&&) = delete;
