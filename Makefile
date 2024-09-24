@@ -29,11 +29,7 @@ SRCS = src/event/epoll.cpp \
 	   src/net/tcp/tcpAccept.cpp\
 	   src/net/tcp/tcpConnect.cpp \
 	   src/net/tcp/tcpServer.cpp \
-	   src/signalMonitor/signalMonitor.cpp \
-	   src/net/http/httpContext.cpp\
-	   src/net/http/httpRequest.cpp\
-	   src/net/http/httpResponse.cpp\
-	   src/net/http/httpServer.cpp
+	   src/signalMonitor/signalMonitor.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
