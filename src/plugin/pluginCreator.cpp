@@ -145,6 +145,11 @@ std::shared_ptr<Plugin> PluginCreator::create(const std::shared_ptr<Engine>& eng
     }
 
     auto ret = createFromDirectory(blacklist, COMMON_API_PLUGINS, engine, pluginTypeName, functionName, extraArgs);
+    if(nullptr == ret)
+    {
+        std::cerr << "createFromDirectory failed " << std::endl;
+        return nullptr;
+    }
     engine->updatePluginMap(key, ret);
 
     return ret;
