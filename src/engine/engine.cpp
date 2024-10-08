@@ -32,7 +32,7 @@ Engine::~Engine()
 }
 
 
-void Engine::addFd(int fd, unsigned int events, FdEventHandler& handler)
+void Engine::addFd(int fd, unsigned int events, const FdEventHandler& handler)
 {
     auto event = std::make_shared<Event>(loop.get(), fd);
     if (events == FdMonitor::EVENT_IN)

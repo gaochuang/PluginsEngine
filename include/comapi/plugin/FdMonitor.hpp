@@ -25,7 +25,7 @@ public:
     static const unsigned int EVENT_ERR;
     static const unsigned int EVENT_HUP;
 
-    virtual void addFd(int fd, unsigned int events, FdEventHandler& handler) = 0;
+    virtual void addFd(int fd, unsigned int events, const FdEventHandler& handler) = 0;
     virtual void removeFd(int fd) = 0;
     virtual void modifyFd(int fd, unsigned int events) = 0;
 protected:
