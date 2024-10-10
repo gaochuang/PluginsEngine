@@ -38,7 +38,7 @@ public:
 private:
     static const int activeEventLength;
     //事件注册表
-    std::unordered_map<int, std::weak_ptr<Event>> eventPool;
+    std::unordered_map<int, std::shared_ptr<Event>> eventPool;
 
     Epoll epoll;
     EventLoop* eventLoop;
