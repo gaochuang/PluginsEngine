@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include <iostream>
 using namespace commonApi;
 
 const unsigned int FdMonitor::EVENT_IN(EPOLLIN);

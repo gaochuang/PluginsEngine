@@ -27,7 +27,7 @@ int EventCtrl::getEpollFd() const noexcept
 void EventCtrl::addEvent(std::shared_ptr<Event> event)
 {
     //添加到event注册表，再加入到epoll中
-    eventPool[event->getFd()] = event;
+    eventPool.insert(std::pair<int, std::weak_ptr<Event>>(event->getFd(), event));
     epoll.addEvent(event.get());
 }
 
@@ -55,7 +55,7 @@ void EventCtrl::modifyEvent(int fd)
     auto it = eventPool.find(fd);
     if (it != eventPool.end())
     {
-        std::shared_ptr<Event> eventS = it->second.lock();
+        std::shared_ptr<Event> eventS = it->second;
         if (eventS)
         {
             epoll.modifyEvent(eventS.get());
@@ -87,11 +87,12 @@ void EventCtrl::waitAndRunHandler(int timeMs)
         return;
     }
 
+
     activeEvents.resize(num);
     for(const auto& event : activeEvents)
     {
         auto fd = event.data.fd;
-        auto eventPtr = eventPool[fd].lock();
+        std::shared_ptr<Event> eventPtr = eventPool[fd];
         if (eventPtr)
         {
             eventPtr->handle(event.events);
