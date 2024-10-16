@@ -44,7 +44,6 @@ namespace commonApi
 
 #define COMMONAPI_CONCAT(A, B) A##B
 
-
-#define COMMONAPI_MAKE_CREATOR_IMPL_NAME(N) COMMONAPI_STR(N, _impl)
+#define COMMONAPI_MAKE_CREATOR_IMPL_NAME(N) COMMONAPI_CONCAT(N, _impl)
 
 #endif
