@@ -114,7 +114,6 @@ void TimerQueue::resetTimer(std::shared_ptr<Timer> timer)
     if (ret < 0)
     {
         std::cerr << "Failed to set timer fd" << " error: " << std::strerror(errno)<< std::endl;
-    
     }
 }
 

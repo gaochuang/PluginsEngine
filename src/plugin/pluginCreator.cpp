@@ -191,7 +191,7 @@ std::shared_ptr<Plugin> PluginCreator::createFromFile(const std::vector<std::str
     auto sharedLibrary = getSharedLibrary(path, *engine);
     if(!sharedLibrary->valid())
     {
-        std::cout << "Shared library " << path << " is invalid" << std::endl;
+        std::cout << "Shared library " << path << " is invalid : " << sharedLibrary->getLastError() << std::endl;
         return nullptr;
     }
 
@@ -221,6 +221,6 @@ std::shared_ptr<Plugin> PluginCreator::createFromSharedLibrary(const std::shared
         return ret;
     }
 
-    std::cerr << "Failed to resolve function " << functionName << " in shared library " << path << "err: " << sharedLibrary->getLastError()<<std::endl;
+    std::cout << "Failed to resolve function " << functionName << " in shared library " << path << "err: " << sharedLibrary->getLastError() << std::endl;
     return nullptr;
 }

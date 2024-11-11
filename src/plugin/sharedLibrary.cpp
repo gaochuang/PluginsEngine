@@ -1,5 +1,7 @@
 #include <dlfcn.h>
-
+#include <iostream>
+#include <cerrno>    // errno
+#include <cstring>   // strerror
 #include "engine/sharedLibrary.hpp"
 
 namespace commonApi
@@ -19,6 +21,11 @@ std::string getLastError()
 SharedLibrary::SharedLibrary(const char* fileName)
 {
     handle = ::dlopen(fileName, RTLD_NOW | RTLD_LOCAL);
+    if(nullptr == handle)
+    {
+        std::cerr << "open  "<< fileName << " failed , handle is null, err: " << ::dlerror() << std::endl;
+    }
+
     lastError = getLastError();
 }
 
