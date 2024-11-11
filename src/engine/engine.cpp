@@ -68,18 +68,20 @@ void Engine::modifyFd(int fd, unsigned int events)
     if (events == FdMonitor::EVENT_IN)
     {
         event->enableReading(true);
+        return;
     }
 
     if (events == FdMonitor::EVENT_OUT)
     {
         event->enableWriting(true);
+        return;
     }
 
     if (events == FdMonitor::EVENT_ERR)
     {
         event->enableErrorEvent(true);
+        return;
     }
-
     loop->modifyEvent(event);
 }
 
