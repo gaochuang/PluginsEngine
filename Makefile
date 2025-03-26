@@ -30,7 +30,8 @@ SRCS = src/event/epoll.cpp \
 	   src/net/tcp/tcpConnect.cpp \
 	   src/net/tcp/tcpServer.cpp \
 	   src/signalMonitor/signalMonitor.cpp \
-	   src/plugin/commonapi.cpp
+	   src/plugin/commonapi.cpp \
+	   src/adapter/IOContextAdapter.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
