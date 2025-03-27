@@ -5,10 +5,8 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-
 jobs:
   build:
-
     runs-on: ubuntu-latest
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y build-essential libboost-all-dev
