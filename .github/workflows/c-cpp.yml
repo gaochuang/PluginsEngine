@@ -5,13 +5,14 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    steps:
     - name: Install dependencies
       run: sudo apt-get update && sudo apt-get install -y build-essential libboost-all-dev
 
-    steps:
     - uses: actions/checkout@v4
     - name: make
       run: make
